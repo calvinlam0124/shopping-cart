@@ -10,3 +10,7 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Express app is running on localhost:${PORT}`)
 })
+
+const faker = require('faker')
+console.log('======', faker.datatype.number)
+console.log('------', faker.random.number)
