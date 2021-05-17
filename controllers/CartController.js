@@ -53,6 +53,18 @@ const cartController = {
     } catch (e) {
       console.log(e)
     }
+  },
+  subCartItem: async (req, res) => {
+    try {
+      // find cart
+      const product = await CartItem.findByPk(req.params.productId)
+      await product.update({
+        quantity: product.quantity - 1 ? product.quantity - 1 : 1
+      })
+      return res.redirect('back')
+    } catch (e) {
+      console.log(e)
+    }
   }
 }
 
