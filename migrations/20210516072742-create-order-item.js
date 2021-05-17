@@ -19,12 +19,12 @@ module.exports = {
       },
       ProductId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'Products',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        // references: {
+        //   model: 'Products',
+        //   key: 'id'
+        // },
+        // onUpdate: 'CASCADE',
+        // onDelete: 'CASCADE'
       },
       price: {
         type: Sequelize.INTEGER
