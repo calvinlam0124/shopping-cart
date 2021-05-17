@@ -5,6 +5,7 @@ const app = express()
 const PORT = process.env.PORT || 3000
 
 app.engine('hbs', exphbs({
+  defaultLayout: 'main',
   extname: '.hbs',
   helpers: require('./config/hbs-helpers')
 }))
