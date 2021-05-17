@@ -65,6 +65,16 @@ const cartController = {
     } catch (e) {
       console.log(e)
     }
+  },
+  deleteCartItem: async (req, res) => {
+    try {
+      // find cart
+      const product = await CartItem.findByPk(req.params.productId)
+      await product.destroy()
+      return res.redirect('back')
+    } catch (e) {
+      console.log(e)
+    }
   }
 }
 

@@ -2,6 +2,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const session = require('express-session')
 const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -16,6 +17,9 @@ app.set('view engine', 'hbs')
 
 // set bodyParser
 app.use(bodyParser.urlencoded({ extended: true }))
+
+// set methodOverride
+app.use(methodOverride('_method'))
 
 // set session
 app.use(session({
