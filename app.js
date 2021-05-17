@@ -1,9 +1,12 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
+const session = require('express-session')
+const bodyParser = require('body-parser')
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
+// set view engine
 app.engine('hbs', exphbs({
   defaultLayout: 'main',
   extname: '.hbs',
@@ -11,6 +14,18 @@ app.engine('hbs', exphbs({
 }))
 app.set('view engine', 'hbs')
 
+// set bodyParser
+app.use(bodyParser.urlencoded({ extended: true }))
+
+// set session
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true
+  // cookie: { maxAge: 80000 }
+}))
+
+// require routes
 require('./routes')(app)
 
 app.listen(PORT, () => {
