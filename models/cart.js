@@ -6,11 +6,10 @@ module.exports = (sequelize, DataTypes) => {
   Cart.associate = function (models) {
     // define association here
     Cart.belongsToMany(models.Product, {
-      through: models.CartItem,
-      // through: {
-      //   model: models.CartItem,
-      //   unique: false
-      // },
+      through: {
+        model: models.CartItem,
+        unique: false
+      },
       foreignKey: 'CartId',
       as: 'cartProducts'
     })
