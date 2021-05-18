@@ -41,11 +41,11 @@
     </ul>
 
     <div style="display: flex; justify-content: space-around;">
-      <form action="/order/{{this.id}}/cancel" method="POST">
+      <form action="/orders/{{this.id}}/cancel" method="POST">
         <button type="submit" class="btn btn-primary">取消訂單</button>
       </form>
 
-      <a href="/order/{{this.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
+      <a href="/orders/{{this.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
     </div>
   </div>
 
