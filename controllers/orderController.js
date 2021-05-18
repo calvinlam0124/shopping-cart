@@ -16,12 +16,23 @@ const transporter = nodemailer.createTransport({
 const orderController = {
   getOrders: async (req, res) => {
     try {
-      const orders = await Order.findAll({
+      const ordersHavingProducts = await Order.findAll({
         raw: true,
         nest: true,
         include: 'orderProducts'
       })
-      // console.log(orders)
+      const orders = await Order.findAll({
+        raw: true,
+        nest: true
+      })
+      orders.forEach(order => {
+        order.orderProducts = []
+      })
+      ordersHavingProducts.forEach(product => {
+        const index = orders.findIndex(order => order.id === product.id)
+        if (index === -1) return
+        orders[index].orderProducts.push(product.orderProducts)
+      })
       return res.render('orders', { orders })
     } catch (e) {
       console.log(e)
