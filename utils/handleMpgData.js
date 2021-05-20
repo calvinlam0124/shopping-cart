@@ -5,17 +5,17 @@ const HashKey = process.env.HashKey
 const HashIV = process.env.HashIV
 const URL = 'http://5398463a6a33.ngrok.io'
 const PayGateWay = 'https://ccore.newebpay.com/MPG/mpg_gateway'
-const ReturnURL = URL + '/newebpay/callback?from=ReturnURL'
-const NotifyURL = URL + '/newebpay/callback?from=NotifyURL'
+const ReturnURL = URL + '/orders/newebpay/callback?from=ReturnURL'
+const NotifyURL = URL + '/orders/newebpay/callback?from=NotifyURL'
 const ClientBackURL = URL + '/orders'
 
-function getMpgData (OrderId, amount, productDesc, email) {
+function getData (amount, productDesc, email) {
   const data = {
     MerchantID: MerchantID,
     RespondType: 'JSON',
     TimeStamp: Date.now(),
     Version: 1.6,
-    MerchantOrderNo: OrderId, // unique
+    MerchantOrderNo: Date.now(), // unique
     Amt: amount, // order amount
     ItemDesc: productDesc, // product description
     TradeLimit: 600, // trade limit seconds
@@ -60,4 +60,16 @@ function tradeInfoSHA (data) {
   return tradeInfoSHA
 }
 
-module.exports = { getMpgData }
+function decryptData (data) {
+  const key = CryptoJS.enc.Utf8.parse(HashKey)
+  const iv = CryptoJS.enc.Utf8.parse(HashIV)
+  const encryptedHexStr = CryptoJS.enc.Hex.parse(data)
+  const encryptedData = CryptoJS.enc.Base64.stringify(encryptedHexStr)
+  const decryptData = CryptoJS.AES.decrypt(encryptedData, key, { iv })
+  return decryptData.toString(CryptoJS.enc.Utf8)
+}
+
+module.exports = {
+  getData,
+  decryptData
+}
