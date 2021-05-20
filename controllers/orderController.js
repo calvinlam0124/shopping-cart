@@ -115,8 +115,16 @@ const orderController = {
       console.log(e)
     }
   },
-  newebpayCallback: (req, res) => {
-    const data = decryptData(req.body.TradeInfo)
+  newebpayCallback: async (req, res) => {
+    try {
+      const data = JSON.parse(decryptData(req.body.TradeInfo))
+      console.log('***data***', data)
+      console.log('***data~~~***', data.Result.MerchantOrderNo)
+      const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })
+      await order.update({ payment_status: 1 })
+    } catch (e) {
+      console.log(e)
+    }
     return res.redirect('/orders')
   }
 }
