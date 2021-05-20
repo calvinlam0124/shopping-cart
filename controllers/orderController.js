@@ -106,15 +106,17 @@ const orderController = {
       const order = await Order.findByPk(req.params.id)
       const tradeData = getData(order.amount, 'good products', 'user@example.com')
       console.log('***tradeData***', tradeData)
+      // save MerchantOrderNo to sn
+      await order.update({
+        sn: tradeData.MerchantOrderNo.toString()
+      })
       return res.render('payment', { order: order.toJSON(), tradeData })
     } catch (e) {
       console.log(e)
     }
   },
   newebpayCallback: (req, res) => {
-    console.log('===TradeInfo===', req.body.TradeInfo)
     const data = decryptData(req.body.TradeInfo)
-    console.log('===data===', data)
     return res.redirect('/orders')
   }
 }

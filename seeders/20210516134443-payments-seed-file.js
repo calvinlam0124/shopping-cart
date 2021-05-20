@@ -12,7 +12,7 @@ module.exports = {
       Array.from({ length: 5 }).map((item, index) => ({
         OrderId: orders[Math.floor(Math.random() * 2)].id,
         amount: faker.datatype.number(),
-        sn: faker.datatype.number(),
+        sn: faker.datatype.number().toString(),
         payment_method: Math.floor(Math.random() * 3) + 1,
         paid_at: new Date(),
         params: null,
