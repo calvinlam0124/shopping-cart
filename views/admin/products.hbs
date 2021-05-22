@@ -60,7 +60,9 @@
             <td>
               <a href="/admin/products/{{this.id}}" class="btn btn-info">詳細內容</a>
               <a href="/admin/products/{{this.id}}" class="btn btn-success">編輯</a>
-              <a href="/admin/products/{{this.id}}" class="btn btn-danger">刪除</a>
+              <form action="/admin/products/{{this.id}}?_method=DELETE" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-danger">刪除</button>
+              </form>
             </td>
           </tr>
           {{/each}}

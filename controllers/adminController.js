@@ -19,9 +19,6 @@ const adminController = {
   // get all products
   getProducts: async (req, res) => {
     try {
-      // status (default: create)
-      // req.session.status = ''
-      // const status = 'create'
       const products = await Product.findAll({
         raw: true,
         nest: true
@@ -82,6 +79,16 @@ const adminController = {
       } else {
         await product.update({ name, description, price, image: product.image })
       }
+      return res.redirect('/admin/products')
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // delete product
+  deleteProduct: async (req, res) => {
+    try {
+      const product = await Product.findByPk(req.params.id)
+      await product.destroy()
       return res.redirect('/admin/products')
     } catch (e) {
       console.log(e)
