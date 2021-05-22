@@ -1,9 +1,9 @@
 const CryptoJS = require('crypto-js')
 
-const MerchantID = process.env.MerchantID
-const HashKey = process.env.HashKey
-const HashIV = process.env.HashIV
-const URL = 'http://5398463a6a33.ngrok.io'
+const MerchantID = process.env.MERCHANT_ID
+const HashKey = process.env.HASH_KEY
+const HashIV = process.env.HASH_IV
+const URL = process.env.URL
 const PayGateWay = 'https://ccore.newebpay.com/MPG/mpg_gateway'
 const ReturnURL = URL + '/orders/newebpay/callback?from=ReturnURL'
 const NotifyURL = URL + '/orders/newebpay/callback?from=NotifyURL'
