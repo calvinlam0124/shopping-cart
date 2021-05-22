@@ -30,8 +30,8 @@ app.use(methodOverride('_method'))
 app.use(session({
   secret: 'secret',
   resave: false,
-  saveUninitialized: true
-  // cookie: { maxAge: 80000 }
+  saveUninitialized: true,
+  cookie: { maxAge: 80000 }
 }))
 
 // require routes
