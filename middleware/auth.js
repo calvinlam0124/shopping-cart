@@ -1,3 +1,6 @@
+const db = require('../models')
+const User = db.User
+
 const passport = require('../config/passport')
 
 const authenticated = (req, res, next) => {
@@ -23,11 +26,17 @@ const authenticated = (req, res, next) => {
 //   })(req, res, next)
 // }
 
-const authenticatedAdmin = (req, res, next) => {
+const authenticatedAdmin = async (req, res, next) => {
   if (!req.session.user.token) {
     return res.redirect('/admin/login')
   } else {
-    return next()
+    try {
+      const user = await User.findByPk(req.session.user.id)
+      req.user = user.toJSON()
+      return next()
+    } catch (e) {
+      console.log(e)
+    }
   }
 }
 

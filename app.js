@@ -3,6 +3,7 @@ const exphbs = require('express-handlebars')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
+const flash = require('connect-flash')
 
 // .env
 if (process.env.NODE_ENV !== 'production') {
@@ -30,9 +31,21 @@ app.use(methodOverride('_method'))
 app.use(session({
   secret: 'secret',
   resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 80000 }
+  saveUninitialized: true
+  // cookie: { maxAge: 80000 }
 }))
+
+// set connect-flash
+app.use(flash())
+
+app.use((req, res, next) => {
+  // res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
+  res.locals.danger_msg = req.flash('danger_msg')
+  return next()
+})
 
 // require routes
 require('./routes')(app)

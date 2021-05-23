@@ -7,7 +7,7 @@ const { authenticatedAdmin } = require('../../middleware/auth')
 
 const adminController = require('../../controllers/adminController')
 
-router.get('/login', (req, res) => { return res.render('admin/login') })
+router.get('/login', adminController.loginPage)
 router.post('/login', adminController.login)
 
 router.get('/products', authenticatedAdmin, adminController.getProducts)

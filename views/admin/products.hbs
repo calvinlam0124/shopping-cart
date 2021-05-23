@@ -9,11 +9,12 @@
       </ul>
     </div>
     <div class="col-md-9">
+      {{> message}}
       {{#if status}}
       <form action="/admin/products/{{product.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
         <h5><span style="background-color:chartreuse;">編輯商品</span></h5>
       {{else}}
-        <form action="/admin/products" method="POST" enctype="multipart/form-data"></form>
+        <form action="/admin/products" method="POST" enctype="multipart/form-data">
         <h5><span style="background-color: aqua;">新增商品</span></h5>
       {{/if}}
         <div class="input-group mb-3">

@@ -20,21 +20,32 @@ const uploadImg = path => {
 }
 
 const adminController = {
+  loginPage: (req, res) => {
+    const email = req.session.email
+    return res.render('admin/login', { email })
+  },
   login: async (req, res) => {
     try {
       const { email, password } = req.body
-      if (!email || !password) {
-        return res.status(400).json({ status: 'error', msg: 'email & password are required!' })
-      }
+      // if (!email || !password) {
+      //   req.flash('warning_msg', 'Email & Password are required!')
+      //   return res.status(400).redirect('/admin/login')
+      // }
       const user = await User.findOne({ where: { email } })
       if (!user) {
-        return res.status(401).json({ status: 'error', msg: 'this email has not been registered!' })
+        req.flash('warning_msg', 'Email incorrect!')
+        req.session.email = email
+        return res.status(401).redirect('/admin/login')
       }
       if (!bcrypt.compareSync(password, user.password)) {
-        return res.status(401).json({ status: 'error', msg: 'password incorrect!' })
+        req.session.email = email
+        req.flash('warning_msg', 'Password incorrect!')
+        return res.status(401).redirect('/admin/login')
       }
       if (user.role !== 'admin') {
-        return res.status(403).json({ status: 'error', msg: 'No authority!' })
+        req.session.email = email
+        req.flash('danger_msg', 'No authority!')
+        return res.status(403).redirect('/admin/login')
       }
       // token
       const payload = { id: user.id }
@@ -45,6 +56,7 @@ const adminController = {
         role: user.role,
         token
       }
+      req.flash('success_msg', 'Login Success!')
       return res.redirect('/admin/products')
     } catch (e) {
       console.log(e)
@@ -66,9 +78,9 @@ const adminController = {
   postProduct: async (req, res) => {
     try {
       const { name, description, price } = req.body
-      // if (!name || !price) {
-      //   return res.redirect('')
-      // }
+      if (!description || !price) {
+        req.flash('warning_msg', 'name & price are required!')
+      }
       if (req.file) {
         imgur.setClientID(IMGUR_CLIENT_ID)
         const img = await uploadImg(req.file.path)
