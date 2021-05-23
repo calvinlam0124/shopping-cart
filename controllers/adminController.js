@@ -62,6 +62,13 @@ const adminController = {
       console.log(e)
     }
   },
+  logout: (req, res) => {
+    req.logout()
+    req.session.user = ''
+    req.session.email = ''
+    req.flash('success_msg', 'Logout Success!')
+    return res.redirect('/admin/login')
+  },
   // get all products
   getProducts: async (req, res) => {
     try {

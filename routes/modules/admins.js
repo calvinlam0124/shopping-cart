@@ -9,6 +9,7 @@ const adminController = require('../../controllers/adminController')
 
 router.get('/login', adminController.loginPage)
 router.post('/login', adminController.login)
+router.get('/logout', adminController.logout)
 
 router.get('/products', authenticatedAdmin, adminController.getProducts)
 router.post('/products', authenticatedAdmin, upload.single('image'), adminController.postProduct)
