@@ -1,0 +1,58 @@
+<div class="row">
+  <div class="col-md-5">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">商品名稱</th>
+          <th scope="col">單價</th>
+          <th scope="col">數量</th>
+          {{!-- <th scope="col">小計</th> --}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each order.orderProducts}}
+        <tr>
+          <td>{{this.name}}</td>
+          <td>{{this.price}}</td>
+          <td>{{this.OrderItem.quantity}}</td>
+          {{!-- <td>{{multiply (this.price this.OrderItem.quantity)}}</td> --}}
+        </tr>
+        {{/each}}
+        <tr>
+          <td></td>
+          <td style="text-align: right;">
+            <h4>Total: </h4>
+          </td>
+          <td>
+            <h4>{{order.amount}}</h4>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <ul>
+      <li>{{order.id}}</li>
+      <li>name: {{order.name}}</li>
+      <li>address: {{order.address}}</li>
+      <li>phone: {{order.phone}}</li>
+      <li>shipping_status: 
+        {{#equal order.shipping_status '1'}}已出貨{{/equal}}
+        {{#equal order.shipping_status '0'}}未出貨{{/equal}}
+        {{#equal order.shipping_status '-1'}}已取消{{/equal}}
+      </li>
+      <li>payment_status: 
+        {{#equal order.payment_status '1'}}已付款{{/equal}}
+        {{#equal order.payment_status '0'}}未付款{{/equal}}
+      </li>
+    </ul>
+    <div>
+      <form action="/orders/{{this.id}}/ship" method="POST" class="d-inline">
+        <button type="submit" class="btn btn-success">訂單出貨</button>
+      </form>
+      <form action="/admin/orders/{{this.id}}/cancel" method="POST" class="d-inline">
+        <button type="submit" class="btn btn-warning">訂單取消</button>
+      </form>
+    </div>
+  </div>

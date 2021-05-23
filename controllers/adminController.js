@@ -159,7 +159,18 @@ const adminController = {
     } catch (e) {
       console.log(e)
     }
-  }
+  },
+  // get order
+  getOrder: async (req, res) => {
+    try {
+      const order = await Order.findByPk(req.params.id, {
+        include: 'orderProducts'
+      })
+      return res.render('admin/order', { order: order.toJSON() })
+    } catch (e) {
+      console.log(e)
+    }
+  },
 }
 
 module.exports = adminController
