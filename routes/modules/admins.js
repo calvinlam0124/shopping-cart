@@ -26,4 +26,8 @@ router.post('/orders/:id/ship', authenticatedAdmin, adminController.shipOrder)
 router.post('/orders/:id/cancel', authenticatedAdmin, adminController.cancelOrder)
 router.post('/orders/:id/recover', authenticatedAdmin, adminController.recoverOrder)
 
+// authority
+router.get('/authority', authenticatedAdmin, adminController.getUsers)
+router.post('/authority/:id', authenticatedAdmin, adminController.changeAuth)
+
 module.exports = router

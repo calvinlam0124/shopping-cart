@@ -215,6 +215,38 @@ const adminController = {
     } catch (e) {
       console.log(e)
     }
+  },
+  // get users
+  getUsers: async (req, res) => {
+    try {
+      const users = await User.findAll({
+        raw: true,
+        nest: true
+      })
+      const currentUser = req.user
+      return res.status(200).render('admin/users', { users, currentUser })
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // change auth
+  changeAuth: async (req, res) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+      if (!user) {
+        req.flash('warning_msg', 'can not find this user!')
+      } else {
+        if (user.role === 'admin') {
+          await user.update({ role: 'user' })
+        } else {
+          await user.update({ role: 'admin' })
+        }
+        req.flash('success_msg', `Id${user.id}: Change Auth to ${user.role} Success!`)
+        return res.status(200).redirect('/admin/authority')
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
 }
 
