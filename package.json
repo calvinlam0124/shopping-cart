@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "crypto": "^1.0.1",
     "crypto-js": "^4.0.0",
@@ -21,10 +22,13 @@
     "express-session": "^1.17.1",
     "faker": "^5.5.3",
     "imgur-node-api": "^0.1.0",
+    "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
     "multer": "^1.4.2",
     "mysql2": "^2.2.5",
     "nodemailer": "^6.6.0",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0"
   }

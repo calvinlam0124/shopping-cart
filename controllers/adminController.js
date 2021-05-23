@@ -1,6 +1,9 @@
 const db = require('../models')
 const Product = db.Product
 
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+
 // imgur
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -16,6 +19,37 @@ const uploadImg = path => {
 }
 
 const adminController = {
+  login: async (req, res) => {
+    try {
+      const { email, password } = req.body
+      if (!email || !password) {
+        return res.status(400).json({ status: 'error', msg: 'email & password are required!' })
+      }
+      const user = await User.findOne({ where: { email } })
+      console.log(user)
+      if (!user) {
+        return res.status(401).json({ status: 'error', msg: 'this email has not been registered!' })
+      }
+      if (!bcrypt.compareSync(password, user.password)) {
+        return res.status(401).json({ status: 'error', msg: 'password incorrect!' })
+      }
+      // token
+      const payload = { id: user.id }
+      const token = jwt.sign(payload, process.env.JWT_SECRET)
+      return res.status(200).json({
+        status: 'success',
+        msg: 'ok',
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role
+        }
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  },
   // get all products
   getProducts: async (req, res) => {
     try {
