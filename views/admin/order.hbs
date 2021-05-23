@@ -47,12 +47,14 @@
         {{#equal order.payment_status '0'}}未付款{{/equal}}
       </li>
     </ul>
-    <div>
+    <div
+    >
       <form action="/orders/{{this.id}}/ship" method="POST" class="d-inline">
         <button type="submit" class="btn btn-success">訂單出貨</button>
       </form>
       <form action="/admin/orders/{{this.id}}/cancel" method="POST" class="d-inline">
         <button type="submit" class="btn btn-warning">訂單取消</button>
       </form>
+      <a href="/admin/orders" class="btn btn-secondary">回到訂單列表</a>
     </div>
   </div>

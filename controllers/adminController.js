@@ -171,6 +171,51 @@ const adminController = {
       console.log(e)
     }
   },
+  // ship order
+  shipOrder: async (req, res) => {
+    try {
+      const order = await Order.findByPk(req.params.id)
+      if (!order) {
+        req.flash('warning_msg', 'can not find this order!')
+      } else {
+        await order.update({ shipping_status: 1 })
+        req.flash('success_msg', 'Ship Order Success!')
+      }
+      return res.status(200).redirect('/admin/orders')
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // cancel order
+  cancelOrder: async (req, res) => {
+    try {
+      const order = await Order.findByPk(req.params.id)
+      if (!order) {
+        req.flash('warning_msg', 'can not find this order!')
+      } else {
+        await order.update({ shipping_status: -1 })
+        req.flash('success_msg', 'Cancel Order Success!')
+      }
+      return res.status(200).redirect('/admin/orders')
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // recover order
+  recoverOrder: async (req, res) => {
+    try {
+      const order = await Order.findByPk(req.params.id)
+      if (!order) {
+        req.flash('warning_msg', 'can not find this order!')
+      } else {
+        await order.update({ shipping_status: 0 })
+        req.flash('success_msg', 'Recover Order Success!')
+      }
+      return res.status(200).redirect('/admin/orders')
+    } catch (e) {
+      console.log(e)
+    }
+  }
 }
 
 module.exports = adminController

@@ -40,12 +40,21 @@
             </td>
             <td>
               <a href="/admin/orders/{{this.id}}" class="btn btn-info">詳細內容</a>
-              <form action="/orders/{{this.id}}/ship" method="POST" class="d-inline">
-                <button type="submit" class="btn btn-success">訂單出貨</button>
+              <form action="/admin/orders/{{this.id}}/ship" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-success" 
+                {{#equal this.shipping_status '1'}}disabled{{/equal}}
+                {{#equal this.shipping_status '-1'}}disabled{{/equal}}
+                >訂單出貨</button>
               </form>
+              {{#equal this.shipping_status '-1'}}
+              <form action="/admin/orders/{{this.id}}/recover" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-primary">恢復訂單</button>
+              </form>
+              {{else}}
               <form action="/admin/orders/{{this.id}}/cancel" method="POST" class="d-inline">
                 <button type="submit" class="btn btn-warning">訂單取消</button>
               </form>
+              {{/equal}}
             </td>
           </tr>
           {{/each}}
