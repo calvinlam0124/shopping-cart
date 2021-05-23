@@ -1,6 +1,7 @@
 const db = require('../models')
 const Product = db.Product
 const User = db.User
+const Order = db.Order
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -143,6 +144,18 @@ const adminController = {
       const product = await Product.findByPk(req.params.id)
       await product.destroy()
       return res.redirect('/admin/products')
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // get orders
+  getOrders: async (req, res) => {
+    try {
+      const orders = await Order.findAll({
+        raw: true,
+        nest: true
+      })
+      return res.render('admin/orders', { orders })
     } catch (e) {
       console.log(e)
     }
