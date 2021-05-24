@@ -52,18 +52,18 @@ const adminController = {
         token
       }
       req.flash('success_msg', 'Login Success!')
-      return res.redirect('/admin/products')
+      return res.status(200).redirect('/admin/products')
     } catch (e) {
       console.log(e)
       return next(e)
     }
   },
-  logout: (req, res, next) => {
+  logout: (req, res) => {
     req.logout()
     req.session.user = ''
     req.session.email = ''
     req.flash('success_msg', 'Logout Success!')
-    return res.redirect('/admin/login')
+    return res.status(200).redirect('/admin/login')
   },
   // get all products
   getProducts: async (req, res, next) => {
@@ -82,9 +82,6 @@ const adminController = {
   postProduct: async (req, res, next) => {
     try {
       const { name, description, price } = req.body
-      if (!description || !price) {
-        req.flash('warning_msg', 'name & price are required!')
-      }
       if (req.file) {
         imgur.setClientID(IMGUR_CLIENT_ID)
         const img = await uploadImg(req.file.path)
@@ -92,7 +89,8 @@ const adminController = {
       } else {
         await Product.create({ name, description, price })
       }
-      return res.redirect('/admin/products')
+      req.flash('success_msg', 'Product Create Success!')
+      return res.status(201).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -128,7 +126,8 @@ const adminController = {
       } else {
         await product.update({ name, description, price, image: product.image })
       }
-      return res.redirect('/admin/products')
+      req.flash('success_msg', 'Product Edit Success!')
+      return res.status(204).redirect('/admin/products')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -139,7 +138,8 @@ const adminController = {
     try {
       const product = await Product.findByPk(req.params.id)
       await product.destroy()
-      return res.redirect('/admin/products')
+      req.flash('success_msg', 'Product Delete Success!')
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -179,7 +179,7 @@ const adminController = {
         await order.update({ shipping_status: 1 })
         req.flash('success_msg', 'Ship Order Success!')
       }
-      return res.status(200).redirect('/admin/orders')
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -195,7 +195,7 @@ const adminController = {
         await order.update({ shipping_status: -1 })
         req.flash('success_msg', 'Cancel Order Success!')
       }
-      return res.status(200).redirect('/admin/orders')
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -211,7 +211,7 @@ const adminController = {
         await order.update({ shipping_status: 0 })
         req.flash('success_msg', 'Recover Order Success!')
       }
-      return res.status(200).redirect('/admin/orders')
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)

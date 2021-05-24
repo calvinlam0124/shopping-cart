@@ -21,7 +21,8 @@
       </a>
       {{#equal user.role 'user'}}
       <a href="/users/logout" class="btn btn-outline-light">Logout</a>
-      {{else}}
+      {{/equal}}
+      {{#equal user.role 'admin'}}
       <a href="/admin/logout" class="btn btn-outline-light">Logout</a>
       {{/equal}}
       {{!-- <a class="navbar-brand" href="/cart">

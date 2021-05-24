@@ -1,5 +1,6 @@
-<div class="row">
+<div class="row mt-3">
   <div class="col-md-5">
+    {{> message}}
     <table class="table">
       <thead>
         <tr>
@@ -47,14 +48,22 @@
         {{#equal order.payment_status '0'}}未付款{{/equal}}
       </li>
     </ul>
-    <div
-    >
-      <form action="/orders/{{this.id}}/ship" method="POST" class="d-inline">
-        <button type="submit" class="btn btn-success">訂單出貨</button>
+    <div>
+      <form action="/admin/orders/{{order.id}}/ship" method="POST" class="d-inline">
+        <button type="submit" class="btn btn-success" 
+          {{#equal order.shipping_status '1' }}disabled{{/equal}} 
+          {{#equal order.shipping_status '-1' }}disabled{{/equal}}>訂單出貨
+        </button>
       </form>
-      <form action="/admin/orders/{{this.id}}/cancel" method="POST" class="d-inline">
+      {{#equal order.shipping_status '-1'}}
+      <form action="/admin/orders/{{order.id}}/recover" method="POST" class="d-inline">
+        <button type="submit" class="btn btn-primary">恢復訂單</button>
+      </form>
+      {{else}}
+      <form action="/admin/orders/{{order.id}}/cancel" method="POST" class="d-inline">
         <button type="submit" class="btn btn-warning">訂單取消</button>
       </form>
+      {{/equal}}
       <a href="/admin/orders" class="btn btn-secondary">回到訂單列表</a>
     </div>
   </div>
