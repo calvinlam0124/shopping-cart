@@ -37,7 +37,7 @@ const userController = {
         token
       }
       req.flash('success_msg', 'Login Success!')
-      return res.redirect('/products')
+      return res.status(200).redirect('/products')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -48,7 +48,36 @@ const userController = {
     req.session.user = ''
     req.session.email = ''
     req.flash('success_msg', 'Logout Success!')
-    return res.redirect('/users/login')
+    return res.status(200).redirect('/users/login')
+  },
+  getRegisterPage: (req, res) => {
+    const email = req.session.email
+    return res.render('register', { email })
+  },
+  register: async (req, res, next) => {
+    try {
+      const { email, password, checkPassword } = req.body
+      req.session.email = email
+      if (password !== checkPassword) {
+        req.flash('warning_msg', 'Password & CheckPassword must be same!')
+        return res.status(400).redirect('back')
+      }
+      const user = await User.findOne({ where: { email } })
+      if (user) {
+        req.flash('warning_msg', 'This Email has been registered!')
+        return res.status(400).redirect('back')
+      }
+      await User.create({
+        email,
+        password: bcrypt.hashSync(password, bcrypt.genSaltSync(10), null),
+        role: 'user'
+      })
+      req.flash('success_msg', 'Register Success!')
+      return res.status(201).redirect('/users/login')
+    } catch (e) {
+      console.log(e)
+      return next(e)
+    }
   }
 }
 
