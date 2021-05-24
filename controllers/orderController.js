@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 })
 
 const orderController = {
-  getOrders: async (req, res) => {
+  getOrders: async (req, res, next) => {
     try {
       const ordersHavingProducts = await Order.findAll({
         raw: true,
@@ -38,9 +38,10 @@ const orderController = {
       return res.render('orders', { orders })
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  postOrder: async (req, res) => {
+  postOrder: async (req, res, next) => {
     try {
       // create order (cart -> order)
       const order = await Order.create({
@@ -74,6 +75,7 @@ const orderController = {
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
           console.log(err)
+          return next(err)
         } else {
           console.log('Email sent: ' + info.response)
         }
@@ -87,9 +89,10 @@ const orderController = {
       return res.redirect('/orders')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  cancelOrder: async (req, res) => {
+  cancelOrder: async (req, res, next) => {
     try {
       const order = await Order.findByPk(req.params.id)
       await order.update({
@@ -99,9 +102,10 @@ const orderController = {
       return res.redirect('back')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  getPayment: async (req, res) => {
+  getPayment: async (req, res, next) => {
     try {
       const order = await Order.findByPk(req.params.id)
       const tradeData = getData(order.amount, 'good products', 'user@example.com')
@@ -113,9 +117,10 @@ const orderController = {
       return res.render('payment', { order: order.toJSON(), tradeData })
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  newebpayCallback: async (req, res) => {
+  newebpayCallback: async (req, res, next) => {
     try {
       const data = JSON.parse(decryptData(req.body.TradeInfo))
       console.log('***data***', data)
@@ -124,6 +129,7 @@ const orderController = {
       await order.update({ payment_status: 1 })
     } catch (e) {
       console.log(e)
+      return next(e)
     }
     return res.redirect('/orders')
   }

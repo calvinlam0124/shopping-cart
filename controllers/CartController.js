@@ -3,7 +3,7 @@ const Cart = db.Cart
 const CartItem = db.CartItem
 
 const cartController = {
-  getCart: async (req, res) => {
+  getCart: async (req, res, next) => {
     try {
       if (req.session.cartId) {
         const cart = await Cart.findByPk(req.session.cartId, {
@@ -15,9 +15,10 @@ const cartController = {
       return res.render('cart')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  postCart: async (req, res) => {
+  postCart: async (req, res, next) => {
     try {
       // find cart or create
       const [cart] = await Cart.findOrCreate({ where: { id: req.session.cartId || 0 } })
@@ -40,9 +41,10 @@ const cartController = {
       return res.redirect('back')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  addCartItem: async (req, res) => {
+  addCartItem: async (req, res, next) => {
     try {
       // find cart
       const product = await CartItem.findByPk(req.params.productId)
@@ -52,9 +54,10 @@ const cartController = {
       return res.redirect('back')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  subCartItem: async (req, res) => {
+  subCartItem: async (req, res, next) => {
     try {
       // find cart
       const product = await CartItem.findByPk(req.params.productId)
@@ -64,9 +67,10 @@ const cartController = {
       return res.redirect('back')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  deleteCartItem: async (req, res) => {
+  deleteCartItem: async (req, res, next) => {
     try {
       // find cart
       const product = await CartItem.findByPk(req.params.productId)
@@ -74,6 +78,7 @@ const cartController = {
       return res.redirect('back')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   }
 }

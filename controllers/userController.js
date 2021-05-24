@@ -5,12 +5,12 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const userController = {
-  getLoginPage: (req, res) => {
+  getLoginPage: (req, res, next) => {
     const front = true
     const email = req.session.email
     return res.render('admin/login', { front, email })
   },
-  login: async (req, res) => {
+  login: async (req, res, next) => {
     try {
       const { email, password } = req.body
       const user = await User.findOne({ where: { email } })
@@ -40,6 +40,7 @@ const userController = {
       return res.redirect('/products')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   logout: (req, res) => {

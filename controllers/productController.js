@@ -5,7 +5,7 @@ const Cart = db.Cart
 const PAGE_LIMIT = 9
 
 const productController = {
-  getProducts: async (req, res) => {
+  getProducts: async (req, res, next) => {
     try {
       let PAGE_OFFSET = 0
       if (req.query.page) {
@@ -37,6 +37,7 @@ const productController = {
       return res.render('products', { products, page, totalPage, prev, next })
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   }
 }

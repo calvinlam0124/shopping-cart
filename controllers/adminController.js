@@ -25,7 +25,7 @@ const adminController = {
     const email = req.session.email
     return res.render('admin/login', { email })
   },
-  login: async (req, res) => {
+  login: async (req, res, next) => {
     try {
       const { email, password } = req.body
       const user = await User.findOne({ where: { email } })
@@ -55,9 +55,10 @@ const adminController = {
       return res.redirect('/admin/products')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
-  logout: (req, res) => {
+  logout: (req, res, next) => {
     req.logout()
     req.session.user = ''
     req.session.email = ''
@@ -65,7 +66,7 @@ const adminController = {
     return res.redirect('/admin/login')
   },
   // get all products
-  getProducts: async (req, res) => {
+  getProducts: async (req, res, next) => {
     try {
       const products = await Product.findAll({
         raw: true,
@@ -74,10 +75,11 @@ const adminController = {
       return res.render('admin/products', { products })
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // create new product
-  postProduct: async (req, res) => {
+  postProduct: async (req, res, next) => {
     try {
       const { name, description, price } = req.body
       if (!description || !price) {
@@ -93,10 +95,11 @@ const adminController = {
       return res.redirect('/admin/products')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // edit product page
-  editProduct: async (req, res) => {
+  editProduct: async (req, res, next) => {
     try {
       // set status
       const status = 1
@@ -110,15 +113,13 @@ const adminController = {
       return res.render('admin/products', { product: product.toJSON(), products, status })
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // edit product
-  putProduct: async (req, res) => {
+  putProduct: async (req, res, next) => {
     try {
       const { name, description, price } = req.body
-      // if (!name || !price) {
-      //   return res.redirect('')
-      // }
       const product = await Product.findByPk(req.params.id)
       if (req.file) {
         imgur.setClientID(IMGUR_CLIENT_ID)
@@ -130,20 +131,22 @@ const adminController = {
       return res.redirect('/admin/products')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // delete product
-  deleteProduct: async (req, res) => {
+  deleteProduct: async (req, res, next) => {
     try {
       const product = await Product.findByPk(req.params.id)
       await product.destroy()
       return res.redirect('/admin/products')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // get orders
-  getOrders: async (req, res) => {
+  getOrders: async (req, res, next) => {
     try {
       const orders = await Order.findAll({
         raw: true,
@@ -152,10 +155,11 @@ const adminController = {
       return res.render('admin/orders', { orders })
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // get order
-  getOrder: async (req, res) => {
+  getOrder: async (req, res, next) => {
     try {
       const order = await Order.findByPk(req.params.id, {
         include: 'orderProducts'
@@ -166,7 +170,7 @@ const adminController = {
     }
   },
   // ship order
-  shipOrder: async (req, res) => {
+  shipOrder: async (req, res, next) => {
     try {
       const order = await Order.findByPk(req.params.id)
       if (!order) {
@@ -178,10 +182,11 @@ const adminController = {
       return res.status(200).redirect('/admin/orders')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // cancel order
-  cancelOrder: async (req, res) => {
+  cancelOrder: async (req, res, next) => {
     try {
       const order = await Order.findByPk(req.params.id)
       if (!order) {
@@ -193,10 +198,11 @@ const adminController = {
       return res.status(200).redirect('/admin/orders')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // recover order
-  recoverOrder: async (req, res) => {
+  recoverOrder: async (req, res, next) => {
     try {
       const order = await Order.findByPk(req.params.id)
       if (!order) {
@@ -208,10 +214,11 @@ const adminController = {
       return res.status(200).redirect('/admin/orders')
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // get users
-  getUsers: async (req, res) => {
+  getUsers: async (req, res, next) => {
     try {
       const users = await User.findAll({
         raw: true,
@@ -221,10 +228,11 @@ const adminController = {
       return res.status(200).render('admin/users', { users, currentUser })
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   },
   // change auth
-  changeAuth: async (req, res) => {
+  changeAuth: async (req, res, next) => {
     try {
       const user = await User.findByPk(req.params.id)
       if (!user) {
@@ -240,6 +248,7 @@ const adminController = {
       }
     } catch (e) {
       console.log(e)
+      return next(e)
     }
   }
 }
