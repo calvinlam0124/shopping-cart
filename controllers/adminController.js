@@ -28,25 +28,19 @@ const adminController = {
   login: async (req, res) => {
     try {
       const { email, password } = req.body
-      // if (!email || !password) {
-      //   req.flash('warning_msg', 'Email & Password are required!')
-      //   return res.status(400).redirect('/admin/login')
-      // }
       const user = await User.findOne({ where: { email } })
+      req.session.email = email
       if (!user) {
         req.flash('warning_msg', 'Email incorrect!')
-        req.session.email = email
-        return res.status(401).redirect('/admin/login')
-      }
-      if (!bcrypt.compareSync(password, user.password)) {
-        req.session.email = email
-        req.flash('warning_msg', 'Password incorrect!')
         return res.status(401).redirect('/admin/login')
       }
       if (user.role !== 'admin') {
-        req.session.email = email
         req.flash('danger_msg', 'No authority!')
         return res.status(403).redirect('/admin/login')
+      }
+      if (!bcrypt.compareSync(password, user.password)) {
+        req.flash('warning_msg', 'Password incorrect!')
+        return res.status(401).redirect('/admin/login')
       }
       // token
       const payload = { id: user.id }

@@ -39,8 +39,8 @@ app.use(session({
 app.use(flash())
 
 app.use((req, res, next) => {
-  // res.locals.isAuthenticated = req.isAuthenticated()
-  res.locals.user = req.user
+  // res.locals.isAuthenticated = req.session.user ? true : false
+  res.locals.user = req.session.user
   res.locals.success_msg = req.flash('success_msg')
   res.locals.warning_msg = req.flash('warning_msg')
   res.locals.danger_msg = req.flash('danger_msg')

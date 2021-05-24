@@ -1,9 +1,19 @@
 <div class="row mt-5">
   <div class="col-md-6 m-auto">
     <div class="card card-body">
-      <h2 class="text-center mt-3">後台Login</h2>
+      <h2 class="text-center mt-3">
+        {{#if front}}
+        前台
+        {{else}}
+        後台
+        {{/if}}
+        Login</h2>
       {{> message}}
+      {{#if front}}
+      <form action="/users/login" method="POST">
+      {{else}}
       <form action="/admin/login" method="POST">
+      {{/if}}
         <div class="form-group mb-3">
           <label for="email">Email</label>
           <input type="email" name="email" id="email" class="form-control" placeholder="enter Email" value="{{ email }}"
@@ -18,6 +28,22 @@
           <button type="submit" class="btn btn-primary">Login</button>
         </div>
       </form>
+      {{#if front}}
+      <div class="d-flex justify-content-between">
+        <p class="lead mt-3">
+          尚未註冊?<a href="/users/register">前往註冊</a>
+        </p>
+        <p class="lead mt-3">
+          <a href="/admin/login">後台登入</a>
+        </p>
+      </div>
+      {{else}}
+      <div class="d-flex justify-content-end">
+        <p class="lead mt-3">
+          <a href="/users/login">前台登入</a>
+        </p>
+      </div>
+      {{/if}}
     </div>
   </div>
 </div>

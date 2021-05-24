@@ -19,7 +19,11 @@
         <i class="fab fa-shopify fa-lg"></i>
         <strong style="font-size:28px;">卡羅購物</strong>
       </a>
+      {{#equal user.role 'user'}}
+      <a href="/users/logout" class="btn btn-outline-light">Logout</a>
+      {{else}}
       <a href="/admin/logout" class="btn btn-outline-light">Logout</a>
+      {{/equal}}
       {{!-- <a class="navbar-brand" href="/cart">
         <i class="fas fa-shopping-cart fa-lg"></i>
       </a>
