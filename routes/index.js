@@ -12,5 +12,5 @@ module.exports = app => {
   app.use('/cartItem', cartItems)
   app.use('/orders', orders)
   app.use('/admin', admins)
-  app.use('/', (req, res) => { return res.redirect('/users/login') })
+  app.use('/', (req, res) => { return res.redirect('/products') })
 }

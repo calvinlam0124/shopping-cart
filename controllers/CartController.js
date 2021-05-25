@@ -5,14 +5,17 @@ const CartItem = db.CartItem
 const cartController = {
   getCart: async (req, res, next) => {
     try {
-      if (req.session.cartId) {
-        const cart = await Cart.findByPk(req.session.cartId, {
+      if (req.session.user) {
+        const cart = await Cart.findOne({
+          where: { UserId: req.session.user.id },
           include: 'cartProducts'
         })
         const totalPrice = cart.cartProducts.length > 0 ? cart.cartProducts.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
         return res.render('cart', { cart: cart.toJSON(), totalPrice })
+      } else {
+        req.flash('warning_msg', '請先登入~')
+        return res.redirect('/users/login')
       }
-      return res.render('cart')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -21,7 +24,14 @@ const cartController = {
   postCart: async (req, res, next) => {
     try {
       // find cart or create
-      const [cart] = await Cart.findOrCreate({ where: { id: req.session.cartId || 0 } })
+      const [cart] = await Cart.findOrCreate({
+        where: {
+          id: req.session.cartId || 0
+        },
+        defaults: {
+          UserId: req.session.user ? req.session.user.id : 0
+        }
+      })
       // find items in the cart or not
       const [product, created] = await CartItem.findOrCreate({
         where: {
