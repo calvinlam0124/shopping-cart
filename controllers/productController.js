@@ -31,6 +31,9 @@ const productController = {
           where: { UserId: req.session.user.id },
           include: 'cartProducts'
         })
+        if (!cart) {
+          return res.render('products', { products, page, totalPage, prev, next })
+        }
         cart = cart.toJSON()
         const totalPrice = cart.cartProducts.length > 0 ? cart.cartProducts.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
         return res.render('products', { products, cart, totalPrice, page, totalPage, prev, next })

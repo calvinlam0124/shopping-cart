@@ -21,11 +21,13 @@ const orderController = {
       const ordersHavingProducts = await Order.findAll({
         raw: true,
         nest: true,
+        where: { UserId: req.session.user.id },
         include: 'orderProducts'
       })
       const orders = await Order.findAll({
         raw: true,
-        nest: true
+        nest: true,
+        where: { UserId: req.session.user.id }
       })
       orders.forEach(order => {
         order.orderProducts = []
@@ -45,6 +47,7 @@ const orderController = {
     try {
       // create order (cart -> order)
       const order = await Order.create({
+        UserId: req.session.user.id,
         name: req.body.name,
         address: req.body.address,
         phone: req.body.phone,
@@ -86,7 +89,8 @@ const orderController = {
       await cart.destroy()
       // clear cartId in session
       req.session.cartId = ''
-      return res.redirect('/orders')
+      req.flash('success_msg', '訂單下定成功!')
+      return res.status(201).redirect('/orders')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -96,10 +100,10 @@ const orderController = {
     try {
       const order = await Order.findByPk(req.params.id)
       await order.update({
-        shipping_status: '-1',
-        payment_status: '-1'
+        shipping_status: '-1'
       })
-      return res.redirect('back')
+      req.flash('danger_msg', `訂單編號${order.id} 已取消!`)
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -124,14 +128,14 @@ const orderController = {
     try {
       const data = JSON.parse(decryptData(req.body.TradeInfo))
       console.log('***data***', data)
-      console.log('***data~~~***', data.Result.MerchantOrderNo)
       const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })
       await order.update({ payment_status: 1 })
+      req.flash('success_msg', `訂單編號:${order.id} 付款成功!`)
+      return res.status(200).redirect('/orders')
     } catch (e) {
       console.log(e)
       return next(e)
     }
-    return res.redirect('/orders')
   }
 }
 

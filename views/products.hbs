@@ -62,7 +62,7 @@
                   </form>
 
                   <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
-                    <button type="submit" class="btn btn-link">
+                    <button type="submit" class="btn btn-link" style="color: red;">
                       <i class="fas fa-trash"></i>
                     </button>
                   </form>
@@ -76,8 +76,10 @@
       <hr>
       <li class="list-group-item">
         Total: ${{totalPrice}}
-        <a href="/cart"><button class="btn btn-primary">Go to Cart</button></a>
       </li>
+      <div class="d-grid gap-2 mt-3">
+        <a href="/cart" class="btn btn-primary">Go to Cart</a>
+      </div>
     </div>
   </nav>
 </div>

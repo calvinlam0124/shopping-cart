@@ -1,14 +1,12 @@
-<h1>顯示購物車</h1>
-
 <div>
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">#</th>
+        <th scope="col">Product</th>
         <th scope="col">Price</th>
         <th scope="col">quantity</th>
         <th scope="col">Subtotal</th>
-        <th scope="col">#</th>
+        <th scope="col">Operate</th>
       </tr>
     </thead>
     <tbody>
@@ -39,7 +37,7 @@
         <td>{{this.price}} * {{this.CartItem.quantity}}</td>
         <td>
           <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-link">
+            <button type="submit" class="btn btn-link" style="color: red;">
               <i class="fas fa-trash"></i>
             </button>
           </form>
@@ -80,7 +78,7 @@
       <input type="hidden" name="amount" value="{{totalPrice}}">
       <input type="hidden" name="shipping_status" value="0">
       <input type="hidden" name="payment_status" value="0">
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary mt-3">送出訂單</button>
     </form>
   </div>
 </div>

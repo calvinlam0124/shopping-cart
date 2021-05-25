@@ -1,3 +1,6 @@
+<div class="mt-3">
+  {{> message}}
+</div>
 {{#each orders}}
 <div class="row">
   <div class="col-md-5">
@@ -32,20 +35,32 @@
 
   <div>
     <ul>
-      <li>{{this.id}}</li>
+      <li>訂單編號: {{this.id}}</li>
       <li>name: {{this.name}}</li>
       <li>address: {{this.address}}</li>
       <li>phone: {{this.phone}}</li>
-      <li>shipping_status: {{this.shipping_status}}</li>
-      <li>payment_status: {{this.payment_status}}</li>
+      <li>shipping_status: 
+        {{#equal this.shipping_status '1'}}已出貨{{/equal}}
+        {{#equal this.shipping_status '0'}}未出貨{{/equal}}
+        {{#equal this.shipping_status '-1'}}已取消{{/equal}}
+      </li>
+      <li>payment_status: 
+        {{#equal this.payment_status '1'}}已付款{{/equal}}
+        {{#equal this.payment_status '0'}}未付款{{/equal}}
+      </li>
     </ul>
 
-    <div style="display: flex; justify-content: space-around;">
-      <form action="/orders/{{this.id}}/cancel" method="POST">
-        <button type="submit" class="btn btn-primary">取消訂單</button>
+    <div class="d-flex justify-content-start" style="margin-left:20px;">
+      <form action="/orders/{{this.id}}/cancel" method="POST" style="margin-right:10px;">
+        <button type="submit" class="btn btn-danger"{{#equal this.shipping_status '0'}}{{else}}disabled{{/equal}}>取消訂單</button>
       </form>
-
-      <a href="/orders/{{this.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
+      {{#equal this.payment_status '1'}}
+      {{else}}
+        {{#equal this.shipping_status '-1'}}
+        {{else}}
+        <a href="/orders/{{this.id}}/payment"><button class="btn btn-success">立即付款</button></a>
+        {{/equal}}
+      {{/equal}}  
     </div>
   </div>
 
