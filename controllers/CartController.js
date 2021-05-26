@@ -10,6 +10,9 @@ const cartController = {
           where: { UserId: req.session.user.id },
           include: 'cartProducts'
         })
+        if (!cart) {
+          return res.render('cart')
+        }
         const totalPrice = cart.cartProducts.length > 0 ? cart.cartProducts.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
         return res.render('cart', { cart: cart.toJSON(), totalPrice })
       } else {

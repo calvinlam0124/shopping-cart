@@ -38,12 +38,12 @@ app.use(session({
 // set connect-flash
 app.use(flash())
 
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.user ? 1 : 0
-  res.locals.user = req.session.user
-  res.locals.success_msg = req.flash('success_msg')
-  res.locals.warning_msg = req.flash('warning_msg')
-  res.locals.danger_msg = req.flash('danger_msg')
+// put token in req.headers
+app.use('*', (req, res, next) => {
+  if (req.session.token) {
+    req.headers['authorization'] = `Bearer ${req.session.token}`
+    return next()
+  }
   return next()
 })
 

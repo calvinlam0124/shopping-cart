@@ -26,7 +26,7 @@
             <td>{{this.email}}</td>
             <td>{{this.role}}</td>
             <td>
-              {{#equal ../currentUser.id this.id}}
+              {{#equal ../user.id this.id}}
               {{else}}
               {{#equal this.role 'user'}}
               <form action="/admin/authority/{{this.id}}" method="POST">

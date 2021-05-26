@@ -70,15 +70,13 @@ const orderController = {
       // send success mail
       const mailOptions = {
         from: process.env.USER_MAIL,
-        to: process.env.USER_MAIL,
-        subject: `${order.id} 訂單成立`,
-        text: `${order.id} 訂單成立`
+        to: req.session.user.email,
+        subject: `[TEST]卡羅購物 訂單編號:${order.id} 成立 請把握時間付款`,
+        text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 未付款\n付款連結: https://8b834bf55541.ngrok.io/orders/${order.id}/payment\n測試用信用卡號:4000-2211-1111\n請點擊付款連結並使用測試信用卡付款! 感謝配合!`
       }
-
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
           console.log(err)
-          return next(err)
         } else {
           console.log('Email sent: ' + info.response)
         }
@@ -130,6 +128,21 @@ const orderController = {
       console.log('***data***', data)
       const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })
       await order.update({ payment_status: 1 })
+      // send success mail
+      const mailOptions = {
+        from: process.env.USER_MAIL,
+        to: req.session.user.email,
+        subject: `[TEST]卡羅購物 訂單編號:${order.id} 付款成功!`,
+        text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 已付款\n近期內會安排出貨 再麻煩注意電子郵件!`
+      }
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('Email sent: ' + info.response)
+        }
+      })
+
       req.flash('success_msg', `訂單編號:${order.id} 付款成功!`)
       return res.status(200).redirect('/orders')
     } catch (e) {
