@@ -1,5 +1,6 @@
 <div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 mt-3">
+    {{>message}}
     <div class="row mt-4">
       {{#each products}}
       <div class="col-md-4">
@@ -43,6 +44,7 @@
     <div class="sidebar-sticky">
       <ul class="list-group list-group-flush">
         <li class="list-group-item">
+          {{#if cart}}
           {{#each cart.cartProducts}}
           <div class="row no-gutters">
             <div class="col-md-4" style="display: flex;align-items: center;">
@@ -71,11 +73,12 @@
             </div>
           </div>
           {{/each}}
+          {{/if}}
         </li>
       </ul>
       <hr>
       <li class="list-group-item">
-        Total: ${{totalPrice}}
+        Total: ${{#if totalPrice}}{{totalPrice}}{{/if}}
       </li>
       <div class="d-grid gap-2 mt-3">
         <a href="/cart" class="btn btn-primary">Go to Cart</a>

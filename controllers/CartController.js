@@ -27,14 +27,25 @@ const cartController = {
   postCart: async (req, res, next) => {
     try {
       // find cart or create
-      const [cart] = await Cart.findOrCreate({
-        where: {
-          id: req.session.cartId || 0
-        },
-        defaults: {
-          UserId: req.session.user ? req.session.user.id : 0
-        }
-      })
+      let cart = {}
+      if (req.user) {
+        const [userCart] = await Cart.findOrCreate({
+          where: {
+            UserId: req.user.id || 0
+          }
+        })
+        cart = userCart
+      } else {
+        const [userCart] = await Cart.findOrCreate({
+          where: {
+            id: req.session.cartId || 0
+          },
+          defaults: {
+            UserId: 0
+          }
+        })
+        cart = userCart
+      }
       // find items in the cart or not
       const [product, created] = await CartItem.findOrCreate({
         where: {

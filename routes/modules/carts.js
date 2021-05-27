@@ -6,6 +6,6 @@ const cartController = require('../../controllers/cartController')
 const { authenticated } = require('../../middleware/auth')
 
 router.get('/', authenticated, cartController.getCart)
-router.post('/', cartController.postCart)
+router.post('/', authenticated, cartController.postCart)
 
 module.exports = router

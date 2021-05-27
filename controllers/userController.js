@@ -1,7 +1,5 @@
 const db = require('../models')
 const User = db.User
-const Cart = db.Cart
-const CartItem = db.CartItem
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -32,54 +30,49 @@ const userController = {
       // token
       const payload = { id: user.id }
       const token = jwt.sign(payload, process.env.JWT_SECRET)
-      req.session.user = {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        token
-      }
-      // login success & check cartId in session or not
-      if (req.session.cartId) {
-        const userCart = await Cart.findOne({
-          where: { UserId: user.id }
-        })
-        if (!userCart) {
-          const cart = await Cart.findByPk(req.session.cartId)
-          await cart.update({ UserId: user.id })
-        } else {
-          // update cartId to user's cartId
-          await CartItem.update(
-            { CartId: userCart.id },
-            { where: { CartId: req.session.cartId } }
-          )
-          // check if ProductId repeat
-          const cartItems = await CartItem.findAll({
-            raw: true,
-            nest: true,
-            where: { CartId: userCart.id }
-          })
-          // store ProductId
-          const map = new Map()
-          for (const item of cartItems) {
-            if (map.get(item.ProductId)) {
-              // update quantity
-              const cartItem = await CartItem.findByPk(map.get(item.ProductId))
-              Promise.all([
-                cartItem.update({ quantity: cartItem.quantity + 1 }),
-                // destroy repeated data
-                await CartItem.destroy({ where: { id: item.id } })
-              ])
-            } else {
-              map.set(item.ProductId, item.id)
-            }
-          }
-          // remove cart (UserId = 0)
-          await Cart.destroy(
-            { where: { id: req.session.cartId } }
-          )
-          req.session.cartId = userCart.id
-        }
-      }
+      req.session.token = token
+      // // login success & check cartId in session or not
+      // if (req.session.cartId) {
+      //   const userCart = await Cart.findOne({
+      //     where: { UserId: user.id }
+      //   })
+      //   if (!userCart) {
+      //     const cart = await Cart.findByPk(req.session.cartId)
+      //     await cart.update({ UserId: user.id })
+      //   } else {
+      //     // update cartId to user's cartId
+      //     await CartItem.update(
+      //       { CartId: userCart.id },
+      //       { where: { CartId: req.session.cartId } }
+      //     )
+      //     // check if ProductId repeat
+      //     const cartItems = await CartItem.findAll({
+      //       raw: true,
+      //       nest: true,
+      //       where: { CartId: userCart.id }
+      //     })
+      //     // store ProductId
+      //     const map = new Map()
+      //     for (const item of cartItems) {
+      //       if (map.get(item.ProductId)) {
+      //         // update quantity
+      //         const cartItem = await CartItem.findByPk(map.get(item.ProductId))
+      //         Promise.all([
+      //           cartItem.update({ quantity: cartItem.quantity + 1 }),
+      //           // destroy repeated data
+      //           await CartItem.destroy({ where: { id: item.id } })
+      //         ])
+      //       } else {
+      //         map.set(item.ProductId, item.id)
+      //       }
+      //     }
+      //     // remove cart (UserId = 0)
+      //     await Cart.destroy(
+      //       { where: { id: req.session.cartId } }
+      //     )
+      //     req.session.cartId = userCart.id
+      //   }
+      // }
 
       req.flash('success_msg', 'Login Success!')
       return res.status(200).redirect('/products')
@@ -90,9 +83,9 @@ const userController = {
   },
   logout: (req, res) => {
     req.logout()
-    req.session.user = ''
     req.session.email = ''
     req.session.cartId = ''
+    req.session.token = ''
     req.flash('success_msg', 'Logout Success!')
     return res.status(200).redirect('/users/login')
   },
@@ -106,7 +99,7 @@ const userController = {
       req.session.email = email
       if (password !== checkPassword) {
         req.flash('warning_msg', 'Password & CheckPassword must be same!')
-        return res.status(400).redirect('back')
+        return res.status(400).redirect('/users/login')
       }
       const user = await User.findOne({ where: { email } })
       if (user) {

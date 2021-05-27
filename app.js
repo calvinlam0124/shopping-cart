@@ -47,6 +47,14 @@ app.use('*', (req, res, next) => {
   return next()
 })
 
+// flash message
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
+  res.locals.danger_msg = req.flash('danger_msg')
+  return next()
+})
+
 // require routes
 require('./routes')(app)
 
