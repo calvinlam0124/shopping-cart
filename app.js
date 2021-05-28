@@ -40,6 +40,8 @@ app.use(flash())
 
 // put token in req.headers
 app.use('*', (req, res, next) => {
+  console.log('**********************')
+  console.log('**token***', req.session.token)
   if (req.session.token) {
     req.headers['authorization'] = `Bearer ${req.session.token}`
     return next()

@@ -4,6 +4,7 @@ const db = require('../models')
 const Order = db.Order
 const Cart = db.Cart
 const OrderItem = db.OrderItem
+const User = db.User
 
 const { getData, decryptData } = require('../utils/handleMpgData')
 
@@ -21,13 +22,13 @@ const orderController = {
       const ordersHavingProducts = await Order.findAll({
         raw: true,
         nest: true,
-        where: { UserId: req.session.user.id },
+        where: { UserId: req.user.id },
         include: 'orderProducts'
       })
       const orders = await Order.findAll({
         raw: true,
         nest: true,
-        where: { UserId: req.session.user.id }
+        where: { UserId: req.user.id }
       })
       orders.forEach(order => {
         order.orderProducts = []
@@ -47,7 +48,7 @@ const orderController = {
     try {
       // create order (cart -> order)
       const order = await Order.create({
-        UserId: req.session.user.id,
+        UserId: req.user.id,
         name: req.body.name,
         address: req.body.address,
         phone: req.body.phone,
@@ -70,9 +71,9 @@ const orderController = {
       // send success mail
       const mailOptions = {
         from: process.env.USER_MAIL,
-        to: req.session.user.email,
+        to: req.user.email,
         subject: `[TEST]卡羅購物 訂單編號:${order.id} 成立 請把握時間付款`,
-        text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 未付款\n付款連結: https://8b834bf55541.ngrok.io/orders/${order.id}/payment\n測試用信用卡號:4000-2211-1111\n請點擊付款連結並使用測試信用卡付款! 感謝配合!`
+        text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 未付款\n付款連結: https://7b66327010b5.ngrok.io/orders/${order.id}/payment\n測試用信用卡號:4000-2211-1111\n請點擊付款連結並使用測試信用卡付款! 感謝配合!`
       }
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
@@ -110,13 +111,13 @@ const orderController = {
   getPayment: async (req, res, next) => {
     try {
       const order = await Order.findByPk(req.params.id)
-      const tradeData = getData(order.amount, 'good products', 'user@example.com')
+      const tradeData = getData(order.amount, 'good products', req.user.email)
       console.log('***tradeData***', tradeData)
       // save MerchantOrderNo to sn
       await order.update({
         sn: tradeData.MerchantOrderNo.toString()
       })
-      return res.render('payment', { order: order.toJSON(), tradeData })
+      return res.render('payment', { order: order.toJSON(), tradeData, token: req.session.token })
     } catch (e) {
       console.log(e)
       return next(e)
@@ -124,14 +125,17 @@ const orderController = {
   },
   newebpayCallback: async (req, res, next) => {
     try {
+      console.log('token', req.session.token)
       const data = JSON.parse(decryptData(req.body.TradeInfo))
       console.log('***data***', data)
       const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })
       await order.update({ payment_status: 1 })
       // send success mail
+      const user = await User.findByPk(order.toJSON().UserId)
+      console.log('===req.user===', req.user)
       const mailOptions = {
         from: process.env.USER_MAIL,
-        to: req.session.user.email,
+        to: user.email,
         subject: `[TEST]卡羅購物 訂單編號:${order.id} 付款成功!`,
         text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 已付款\n近期內會安排出貨 再麻煩注意電子郵件!`
       }

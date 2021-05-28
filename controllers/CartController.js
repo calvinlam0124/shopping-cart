@@ -5,9 +5,9 @@ const CartItem = db.CartItem
 const cartController = {
   getCart: async (req, res, next) => {
     try {
-      if (req.session.user) {
+      if (req.user) {
         const cart = await Cart.findOne({
-          where: { UserId: req.session.user.id },
+          where: { UserId: req.user.id },
           include: 'cartProducts'
         })
         if (!cart) {
@@ -62,7 +62,7 @@ const cartController = {
       await product.save()
       // save cartId in session
       req.session.cartId = cart.id
-      return res.redirect('back')
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -75,7 +75,7 @@ const cartController = {
       await product.update({
         quantity: product.quantity + 1
       })
-      return res.redirect('back')
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -88,7 +88,7 @@ const cartController = {
       await product.update({
         quantity: product.quantity - 1 ? product.quantity - 1 : 1
       })
-      return res.redirect('back')
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)
@@ -99,7 +99,7 @@ const cartController = {
       // find cart
       const product = await CartItem.findByPk(req.params.productId)
       await product.destroy()
-      return res.redirect('back')
+      return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
       return next(e)

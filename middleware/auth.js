@@ -8,6 +8,7 @@ const authenticated = (req, res, next) => {
         return res.redirect('/users/login')
       }
       req.user = user.toJSON()
+      console.log('---auth---user', req.user)
       res.locals.isAuthenticated = req.isAuthenticated()
       res.locals.user = req.user
       return next()

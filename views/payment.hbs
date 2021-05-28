@@ -1,7 +1,7 @@
 <h3>準備為訂單編號： {{order.id}} 付款 </h3>
 <h4>總價 {{order.amount}} </h4>
 
-<form name='Newebpay' action='{{tradeData.PayGateWay}}' method="POST">
+<form name="Newebpay" action="{{tradeData.PayGateWay}}" method="POST">
   MerchantID:
   <input type="text" name="MerchantID" value="{{tradeData.MerchantID}}"><br>
   TradeInfo:
@@ -12,3 +12,6 @@
   <input type="text" name="Version" value="{{tradeData.Version}}"><br>
   <button type="submit" class="btn btn-primary">Payment</button>
 </form>
+<script>
+  localStorage.setItem('token', '{{token}}')
+</script>

@@ -1,10 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
+const { authenticated } = require('../../middleware/auth')
+
 const cartController = require('../../controllers/cartController')
 
-router.post('/:productId/add', cartController.addCartItem)
-router.post('/:productId/sub', cartController.subCartItem)
-router.delete('/:productId', cartController.deleteCartItem)
+router.post('/:productId/add', authenticated, cartController.addCartItem)
+router.post('/:productId/sub', authenticated, cartController.subCartItem)
+router.delete('/:productId', authenticated, cartController.deleteCartItem)
 
 module.exports = router
