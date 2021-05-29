@@ -29,7 +29,7 @@ app.use(methodOverride('_method'))
 
 // set session
 app.use(session({
-  secret: 'secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
   // cookie: { maxAge: 80000 }
