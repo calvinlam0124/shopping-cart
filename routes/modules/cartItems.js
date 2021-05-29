@@ -3,7 +3,7 @@ const router = express.Router()
 
 const { authenticated } = require('../../middleware/auth')
 
-const cartController = require('../../controllers/cartController')
+const cartController = require('../../controllers/CartController')
 
 router.post('/:productId/add', authenticated, cartController.addCartItem)
 router.post('/:productId/sub', authenticated, cartController.subCartItem)
