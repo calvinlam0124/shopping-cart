@@ -73,7 +73,7 @@ const orderController = {
         from: process.env.USER_MAIL,
         to: req.user.email,
         subject: `[TEST]卡羅購物 訂單編號:${order.id} 成立 請把握時間付款`,
-        text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 未付款\n付款連結: https://7b66327010b5.ngrok.io/orders/${order.id}/payment\n測試用信用卡號:4000-2211-1111\n請點擊付款連結並使用測試信用卡付款! 感謝配合!`
+        text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 未付款\n付款連結: https://3558cc6c887c.ngrok.io/orders/${order.id}/payment\n測試用信用卡號:4000-2211-1111\n請點擊付款連結並使用測試信用卡付款! 感謝配合!`
       }
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) {

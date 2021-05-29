@@ -4,6 +4,7 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
+const MemoryStore = require('memorystore')(session)
 
 // .env
 if (process.env.NODE_ENV !== 'production') {
@@ -31,8 +32,11 @@ app.use(methodOverride('_method'))
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: true
-  // cookie: { maxAge: 80000 }
+  saveUninitialized: true,
+  cookie: { maxAge: 86400000 },
+  store: new MemoryStore({
+    checkPeriod: 86400000 // 24h
+  })
 }))
 
 // set connect-flash
