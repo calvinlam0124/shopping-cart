@@ -5,15 +5,8 @@ const Order = db.Order
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const nodemailer = require('nodemailer')
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.USER_MAIL,
-    pass: process.env.USER_PASSWORD
-  }
-})
+const { sendMail, mailContent } = require('../utils/sendMail')
 
 // imgur
 const imgur = require('imgur-node-api')
@@ -53,7 +46,8 @@ const adminController = {
       }
       // token
       const payload = { id: user.id }
-      const token = jwt.sign(payload, process.env.JWT_SECRET)
+      const expiresIn = { expiresIn: '10h' }
+      const token = jwt.sign(payload, process.env.JWT_SECRET, expiresIn)
       req.session.token = token
       req.flash('success_msg', 'Login Success!')
       return res.status(200).redirect('/admin/products')
@@ -64,8 +58,7 @@ const adminController = {
   },
   logout: (req, res) => {
     req.logout()
-    req.session.token = ''
-    req.session.email = ''
+    req.session.destroy()
     req.flash('success_msg', 'Logout Success!')
     return res.status(200).redirect('/admin/login')
   },
@@ -182,22 +175,13 @@ const adminController = {
       } else {
         await order.update({ shipping_status: 1 })
         req.flash('success_msg', 'Ship Order Success!')
-
-        // send success mail
+        // send mail
         const user = await User.findByPk(order.UserId)
-        const mailOptions = {
-          from: process.env.USER_MAIL,
-          to: user.toJSON().email,
-          subject: `[TEST]卡羅購物 訂單編號:${order.id} 已出貨!`,
-          text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 已出貨 / 已付款\n商品已出貨 再麻煩注意收件地址!`
-        }
-        transporter.sendMail(mailOptions, (err, info) => {
-          if (err) {
-            console.log(err)
-          } else {
-            console.log('Email sent: ' + info.response)
-          }
-        })
+        const email = user.toJSON().email
+        const subject = `[TEST]卡羅購物 訂單編號:${order.id} 已出貨!`
+        const status = '已出貨 / 已付款'
+        const msg = '商品已出貨 再麻煩注意收件地址!'
+        sendMail(email, subject, mailContent(order, status, msg))
       }
       return res.status(200).redirect('back')
     } catch (e) {

@@ -1,20 +1,10 @@
-const nodemailer = require('nodemailer')
-
 const db = require('../models')
 const Order = db.Order
 const Cart = db.Cart
 const OrderItem = db.OrderItem
-const User = db.User
 
 const { getData, decryptData } = require('../utils/handleMpgData')
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.USER_MAIL,
-    pass: process.env.USER_PASSWORD
-  }
-})
+const { sendMail, mailContent } = require('../utils/sendMail')
 
 const orderController = {
   getOrders: async (req, res, next) => {
@@ -68,22 +58,13 @@ const orderController = {
           quantity: cart.cartProducts[i].CartItem.quantity
         })
       ))
-      // send success mail
-      const mailOptions = {
-        from: process.env.USER_MAIL,
-        to: req.user.email,
-        subject: `[TEST]卡羅購物 訂單編號:${order.id} 成立 請把握時間付款`,
-        text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 未付款\n付款連結: https://3558cc6c887c.ngrok.io/orders/${order.id}/payment\n測試用信用卡號:4000-2211-1111\n請點擊付款連結並使用測試信用卡付款! 感謝配合!`
-      }
-      transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-          console.log(err)
-        } else {
-          console.log('Email sent: ' + info.response)
-        }
-      })
-
       Promise.all(items)
+      // send mail
+      const email = req.user.email
+      const subject = `[TEST]卡羅購物 訂單號碼:${order.id} 成立 請把握時間付款`
+      const status = '未出貨 / 未付款'
+      const msg = '請點擊付款連結並使用測試信用卡付款! 感謝配合!'
+      sendMail(email, subject, mailContent(order, status, msg))
       // clear cart & cartItem
       await cart.destroy()
       // clear cartId in session
@@ -130,23 +111,13 @@ const orderController = {
       console.log('***data***', data)
       const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })
       await order.update({ payment_status: 1 })
-      // send success mail
-      const user = await User.findByPk(order.toJSON().UserId)
-      console.log('===req.user===', req.user)
-      const mailOptions = {
-        from: process.env.USER_MAIL,
-        to: user.email,
-        subject: `[TEST]卡羅購物 訂單編號:${order.id} 付款成功!`,
-        text: `訂單內容:\n編號: ${order.id}\n訂單金額: ${order.amount}\n姓名: ${order.name}\n寄送地址: ${order.address}\n電話: ${order.phone}\n訂單狀態: 未出貨 / 已付款\n近期內會安排出貨 再麻煩注意電子郵件!`
-      }
-      transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-          console.log(err)
-        } else {
-          console.log('Email sent: ' + info.response)
-        }
-      })
-
+      // send mail
+      const email = req.user.email
+      const subject = `[TEST]卡羅購物 訂單編號:${order.id} 付款成功!`
+      const status = '未出貨 / 已付款'
+      const msg = '近期內會安排出貨 再麻煩注意電子郵件!'
+      sendMail(email, subject, mailContent(order, status, msg))
+      // flash msg
       req.flash('success_msg', `訂單編號:${order.id} 付款成功!`)
       return res.status(200).redirect('/orders')
     } catch (e) {

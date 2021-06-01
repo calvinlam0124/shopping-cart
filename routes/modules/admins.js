@@ -21,7 +21,6 @@ router.delete('/products/:id', authenticatedAdmin, adminController.deleteProduct
 // orders
 router.get('/orders', authenticatedAdmin, adminController.getOrders)
 router.get('/orders/:id', authenticatedAdmin, adminController.getOrder)
-router.get('/orders/:id', authenticatedAdmin, adminController.getOrder)
 router.post('/orders/:id/ship', authenticatedAdmin, adminController.shipOrder)
 router.post('/orders/:id/cancel', authenticatedAdmin, adminController.cancelOrder)
 router.post('/orders/:id/recover', authenticatedAdmin, adminController.recoverOrder)

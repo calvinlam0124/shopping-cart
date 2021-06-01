@@ -3,10 +3,19 @@
     <div class="card card-body">
       <h2 class="text-center mt-3">註冊帳號</h2>
       {{> message}}
-      <form action="/users/register" method="POST">
+      <form action="/users/register/captcha" method="POST">
         <div class="form-group mb-3">
           <label for="email">Email</label>
           <input type="email" name="email" id="email" class="form-control" placeholder="enter Email" value="{{email}}" required>
+          <button type="submit" class="btn btn-outline-success mt-2">發送驗證碼至信箱</button>
+        </div>
+      </form>
+      <form action="/users/register" method="POST">
+        <input type="hidden" name="email" value="{{email}}">
+        <div class="form-group mb-3">
+          <label for="captcha">輸入驗證碼</label>
+          <input type="password" name="captcha" id="captcha" class="form-control" placeholder="enter captcha"
+            style="margin-top:10px;" required>
         </div>
         <div class="form-group mb-3">
           <label for="password">Password</label>

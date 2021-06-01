@@ -43,7 +43,7 @@ app.use(session({
 app.use(flash())
 
 // put token in req.headers
-app.use('*', (req, res, next) => {
+app.use((req, res, next) => {
   console.log('**********************')
   console.log('**token***', req.session.token)
   if (req.session.token) {
