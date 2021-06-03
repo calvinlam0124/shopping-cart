@@ -6,7 +6,7 @@ const Order = db.Order
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-const { sendMail, mailContent } = require('../utils/sendMail')
+const { sendMail, payMail } = require('../utils/sendMail')
 
 // imgur
 const imgur = require('imgur-node-api')
@@ -182,7 +182,7 @@ const adminController = {
         const subject = `[TEST]卡羅購物 訂單編號:${order.id} 已出貨!`
         const status = '已出貨 / 已付款'
         const msg = '商品已出貨 再麻煩注意收件地址!'
-        sendMail(email, subject, mailContent(order, status, msg))
+        sendMail(email, subject, payMail(order, status, msg))
       }
       return res.status(200).redirect('back')
     } catch (e) {

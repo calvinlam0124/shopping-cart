@@ -97,6 +97,14 @@ const userController = {
     req.session.captcha = captcha
     req.flash('success_msg', `驗證碼已發送至此信箱:${email}`)
     return res.redirect('/users/register')
+  },
+  googleLogin: (req, res) => {
+    const payload = { id: req.user[0].id }
+    const expiresIn = { expiresIn: '10h' }
+    const token = jwt.sign(payload, process.env.JWT_SECRET, expiresIn)
+    req.session.token = token
+    req.flash('success_msg', 'Google登入成功!')
+    return res.redirect('/products')
   }
 }
 

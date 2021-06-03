@@ -4,7 +4,7 @@ const Cart = db.Cart
 const OrderItem = db.OrderItem
 
 const { getData, decryptData } = require('../utils/handleMpgData')
-const { sendMail, mailContent } = require('../utils/sendMail')
+const { sendMail, orderMail, payMail} = require('../utils/sendMail')
 
 const orderController = {
   getOrders: async (req, res, next) => {
@@ -64,7 +64,7 @@ const orderController = {
       const subject = `[TEST]卡羅購物 訂單號碼:${order.id} 成立 請把握時間付款`
       const status = '未出貨 / 未付款'
       const msg = '請點擊付款連結並使用測試信用卡付款! 感謝配合!'
-      sendMail(email, subject, mailContent(order, status, msg))
+      sendMail(email, subject, orderMail(order, status, msg))
       // clear cart & cartItem
       await cart.destroy()
       // clear cartId in session
@@ -116,7 +116,7 @@ const orderController = {
       const subject = `[TEST]卡羅購物 訂單編號:${order.id} 付款成功!`
       const status = '未出貨 / 已付款'
       const msg = '近期內會安排出貨 再麻煩注意電子郵件!'
-      sendMail(email, subject, mailContent(order, status, msg))
+      sendMail(email, subject, payMail(order, status, msg))
       // flash msg
       req.flash('success_msg', `訂單編號:${order.id} 付款成功!`)
       return res.status(200).redirect('/orders')
