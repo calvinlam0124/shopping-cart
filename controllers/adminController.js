@@ -58,7 +58,8 @@ const adminController = {
   },
   logout: (req, res) => {
     req.logout()
-    req.session.destroy()
+    req.session.token = ''
+    req.session.email = ''
     req.flash('success_msg', 'Logout Success!')
     return res.status(200).redirect('/admin/login')
   },

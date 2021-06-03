@@ -5,12 +5,14 @@ const cartItems = require('./modules/cartItems')
 const orders = require('./modules/orders')
 const admins = require('./modules/admins')
 
+const { authenticated, authenticator } = require('../middleware/auth')
+
 module.exports = app => {
   app.use('/users', users)
   app.use('/products', products)
   app.use('/cart', carts)
   app.use('/cartItem', cartItems)
-  app.use('/orders', orders)
+  app.use('/orders', authenticated, orders)
   app.use('/admin', admins)
   app.use('/', (req, res) => { return res.redirect('/products') })
 }

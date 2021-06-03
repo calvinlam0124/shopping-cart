@@ -106,7 +106,7 @@ const orderController = {
   },
   newebpayCallback: async (req, res, next) => {
     try {
-      console.log('token', req.session.token)
+      console.log('===token===', req.session.token)
       const data = JSON.parse(decryptData(req.body.TradeInfo))
       console.log('***data***', data)
       const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })

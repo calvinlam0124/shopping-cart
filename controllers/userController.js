@@ -34,7 +34,6 @@ const userController = {
       const expiresIn = { expiresIn: '10h' }
       const token = jwt.sign(payload, process.env.JWT_SECRET, expiresIn)
       req.session.token = token
-      req.session.save()
       req.flash('success_msg', 'Login Success!')
       return res.status(200).redirect('/products')
     } catch (e) {
@@ -44,7 +43,9 @@ const userController = {
   },
   logout: (req, res) => {
     req.logout()
-    req.session.destroy()
+    req.session.email = ''
+    req.session.cartId = ''
+    req.session.token = ''
     req.flash('success_msg', 'Logout Success!')
     return res.status(200).redirect('/users/login')
   },
@@ -89,7 +90,6 @@ const userController = {
     for (let i = 0; i < 6; i++) {
       captcha += Math.floor(Math.random() * 10)
     }
-    console.log('captcha', captcha)
     const subject = `[TEST]卡羅購物 註冊驗證碼: ${captcha}`
     sendMail(email, subject, registerMail(captcha))
     // session store email & captcha

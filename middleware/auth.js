@@ -1,40 +1,34 @@
 const passport = require('../config/passport')
 
-const authenticated = (req, res, next) => {
-  if (req.session.token) {
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
-      if (!user) {
-        console.log(err)
-        return res.redirect('/users/login')
-      }
-      req.user = user.toJSON()
-      console.log('---auth---user', req.user)
-      res.locals.isAuthenticated = req.isAuthenticated()
-      res.locals.user = req.user
-      return next()
-    })(req, res, next)
-  } else {
-    return next()
-  }
-}
-
 const authenticatedAdmin = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user, info) => {
     if (!user) {
       console.log(err)
+      req.flash('warning_msg', 'JWT驗證未通過!')
       return res.redirect('/admin/login')
     }
     if (user.role !== 'admin') {
+      req.flash('danger_msg', '權限不足!')
       return res.redirect('/admin/login')
     }
-    req.user = user.toJSON()
-    res.locals.isAuthenticated = req.isAuthenticated()
+    return next()
+  })(req, res, next)
+}
+
+const authenticated = (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (!user) {
+      console.log(err)
+      req.flash('warning_msg', 'JWT驗證未通過!')
+      return res.redirect('/users/login')
+    }
     res.locals.user = req.user
+    res.locals.isAuthenticated = req.isAuthenticated()
     return next()
   })(req, res, next)
 }
 
 module.exports = {
-  authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  authenticated
 }

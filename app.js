@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const MemoryStore = require('memorystore')(session)
+const passport = require('passport')
 
 // .env
 if (process.env.NODE_ENV !== 'production') {
@@ -44,10 +45,9 @@ app.use(flash())
 
 // put token in req.headers
 app.use((req, res, next) => {
-  console.log('**********************')
   console.log('**token***', req.session.token)
   if (req.session.token) {
-    req.headers['authorization'] = `Bearer ${req.session.token}`
+    req.headers.authorization = `Bearer ${req.session.token}`
     return next()
   }
   return next()
@@ -60,6 +60,10 @@ app.use((req, res, next) => {
   res.locals.danger_msg = req.flash('danger_msg')
   return next()
 })
+
+// use passport
+app.use(passport.initialize())
+app.use(passport.session())
 
 // require routes
 require('./routes')(app)

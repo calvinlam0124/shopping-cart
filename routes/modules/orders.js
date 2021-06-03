@@ -3,12 +3,10 @@ const router = express.Router()
 
 const orderController = require('../../controllers/orderController')
 
-const { authenticated } = require('../../middleware/auth')
-
-router.get('/', authenticated, orderController.getOrders)
-router.post('/', authenticated, orderController.postOrder)
-router.post('/:id/cancel', authenticated, orderController.cancelOrder)
-router.get('/:id/payment', authenticated, orderController.getPayment)
-router.post('/newebpay/callback', authenticated, orderController.newebpayCallback)
+router.get('/', orderController.getOrders)
+router.post('/', orderController.postOrder)
+router.post('/:id/cancel', orderController.cancelOrder)
+router.get('/:id/payment', orderController.getPayment)
+router.post('/newebpay/callback', orderController.newebpayCallback)
 
 module.exports = router
