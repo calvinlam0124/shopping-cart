@@ -11,6 +11,8 @@ const authenticatedAdmin = (req, res, next) => {
       req.flash('danger_msg', '權限不足!')
       return res.redirect('/admin/login')
     }
+    res.locals.user = req.user
+    res.locals.isAuthenticated = req.isAuthenticated()
     return next()
   })(req, res, next)
 }
@@ -24,6 +26,8 @@ const authenticated = (req, res, next) => {
     }
     res.locals.user = req.user
     res.locals.isAuthenticated = req.isAuthenticated()
+    res.locals.token = req.session.token
+    console.log('---req.session.token--', req.session.token)
     return next()
   })(req, res, next)
 }

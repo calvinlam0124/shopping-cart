@@ -24,13 +24,9 @@
           <input type="password" name="password" id="password" class="form-control" placeholder="enter Password"
             required>
         </div>
-        <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-        {{#if front}}
-        <div class="d-grid gap-2 mt-2">        
-          <a href="/users/google" class="btn btn-success">Google Login</a>
-        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        {{#if front}}      
+        <a href="/users/google" class="btn btn-success btn-block mt-2">Google Login</a>
         {{/if}}
       </form>
       {{#if front}}

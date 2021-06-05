@@ -20,6 +20,7 @@ const jwtStrategy = new JwtStrategy(jwtOptions, async (req, jwt_payload, next) =
       return next(null, false)
     }
     req.user = user.toJSON()
+    console.log('---jwt user---', req.user)
     return next(null, user)
   } catch (e) {
     console.log(e)
@@ -30,9 +31,8 @@ const jwtStrategy = new JwtStrategy(jwtOptions, async (req, jwt_payload, next) =
 const googleStrategy = new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.GOOGLE_CALLBACK,
-  passReqToCallback: true
-}, async (req, accessToken, refreshToken, profile, done) => {
+  callbackURL: process.env.GOOGLE_CALLBACK
+}, async (accessToken, refreshToken, profile, done) => {
   try {
     const { email } = profile._json
     const password = Math.random().toString(36).slice(-8)
