@@ -6,6 +6,7 @@ const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const MemoryStore = require('memorystore')(session)
 const passport = require('passport')
+const cors = require('cors')
 
 // .env
 if (process.env.NODE_ENV !== 'production') {
@@ -14,6 +15,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express()
 const PORT = process.env.PORT || 3000
+
+// set cors
+app.use(cors())
 
 // set view engine
 app.engine('hbs', exphbs({
@@ -69,12 +73,12 @@ app.use(passport.session())
 require('./routes')(app)
 
 // error handling
-app.use((err, req, res, next) => {
-  if (err) {
-    res.status(500)
-    return res.render('error', { err })
-  }
-})
+// app.use((err, req, res, next) => {
+//   if (err) {
+//     res.status(500)
+//     return res.render('error', { err })
+//   }
+// })
 
 app.listen(PORT, () => {
   console.log(`Express app is running on localhost:${PORT}`)
