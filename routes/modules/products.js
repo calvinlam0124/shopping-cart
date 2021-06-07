@@ -2,15 +2,12 @@ const express = require('express')
 const router = express.Router()
 
 const { authenticated } = require('../../middleware/auth')
+const checkToken = require('../../middleware/checkToken')
 
 const productController = require('../../controllers/productController')
 
 router.get('/', (req, res, next) => {
-  if (req.session.token) {
-    return next()
-  } else {
-    productController.getProducts(req, res, next)
-  }
+  checkToken(req, res, next, productController.getProducts)
 }, authenticated, productController.getProducts)
 
 module.exports = router
