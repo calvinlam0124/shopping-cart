@@ -64,22 +64,16 @@ const cartController = {
         }
       })
       if (!created) {
+        // check product quantity+1 > inventory or not
+        if (product.quantity + 1 > addProduct.inventory) {
+          req.flash('warning_msg', `商品Id:${req.body.productId} 庫存剩下${addProduct.inventory}件!`)
+          return res.redirect('back')
+        }
         product.quantity += 1
       }
       await product.save()
       // save cartId in session
       req.session.cartId = cart.id
-      // check product quantity <= inventory
-      const cartProduct = await CartItem.findOne({
-        where: {
-          ProductId: req.body.productId,
-          CartId: req.session.cartId
-        }
-      })
-      if (cartProduct.quantity > addProduct.inventory) {
-        req.flash('warning_msg', `商品Id:${req.body.productId} 庫存剩下${addProduct.inventory}件，請重新選擇數量!`)
-        return res.redirect('back')
-      }
       return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
@@ -90,6 +84,13 @@ const cartController = {
     try {
       // find cart
       const product = await CartItem.findByPk(req.params.productId)
+      // find product inventory
+      const addProduct = await Product.findByPk(product.ProductId)
+      // check product quantity+1 > inventory or not
+      if (product.quantity + 1 > addProduct.inventory) {
+        req.flash('warning_msg', `商品Id:${req.body.productId} 庫存剩下${addProduct.inventory}件!`)
+        return res.redirect('back')
+      }
       await product.update({
         quantity: product.quantity + 1
       })
