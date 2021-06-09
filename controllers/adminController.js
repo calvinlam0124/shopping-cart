@@ -68,7 +68,8 @@ const adminController = {
     try {
       const products = await Product.findAll({
         raw: true,
-        nest: true
+        nest: true,
+        where: { deletedAt: null }
       })
       return res.render('admin/products', { products })
     } catch (e) {
@@ -135,7 +136,15 @@ const adminController = {
   deleteProduct: async (req, res, next) => {
     try {
       const product = await Product.findByPk(req.params.id)
-      await product.destroy()
+      if (!product) {
+        req.flash('warning_msg', '這個商品不存在!')
+      }
+      if (product.deletedAt !== null) {
+        req.flash('warning_msg', '這個商品已經被刪除了!')
+      }
+      await product.update({
+        deletedAt: 1
+      })
       req.flash('success_msg', `Product Id:${req.params.id} Delete Success!`)
       return res.status(200).redirect('back')
     } catch (e) {
