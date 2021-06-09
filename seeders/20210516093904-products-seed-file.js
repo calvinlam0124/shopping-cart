@@ -11,6 +11,8 @@ module.exports = {
         description: faker.commerce.productDescription(),
         price: faker.commerce.price(),
         image: `https://loremflickr.com/320/240/object/?lock=${Math.random() * 1000}`,
+        deletedAt: null,
+        inventory: Math.floor(Math.random() * 1000),
         createdAt: new Date(),
         updatedAt: new Date()
       })), {})
