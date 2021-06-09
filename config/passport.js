@@ -31,7 +31,7 @@ const jwtStrategy = new JwtStrategy(jwtOptions, async (req, jwt_payload, next) =
 const googleStrategy = new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.GOOGLE_CALLBACK
+  callbackURL: process.env.URL + '/users/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const { email } = profile._json

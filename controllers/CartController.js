@@ -1,6 +1,7 @@
 const db = require('../models')
 const Cart = db.Cart
 const CartItem = db.CartItem
+const Product = db.Product
 
 const cartController = {
   getCart: async (req, res, next) => {
@@ -26,6 +27,12 @@ const cartController = {
   },
   postCart: async (req, res, next) => {
     try {
+      // check product has inventory
+      const addProduct = await Product.findByPk(req.body.productId)
+      if (addProduct.inventory === 0) {
+        req.flash('warning_msg', `商品Id:${req.body.productId} 已經沒有庫存了!`)
+        return res.redirect('back')
+      }
       // find cart or create
       let cart = {}
       if (req.user) {
