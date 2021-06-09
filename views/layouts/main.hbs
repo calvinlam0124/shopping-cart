@@ -1,114 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卡羅購物</title>
-  {{!-- font awesome --}}
-  <script src="https://kit.fontawesome.com/ccfd93e9a7.js" crossorigin="anonymous"></script>
-  {{!-- bootstrap --}}
-  <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css">
-</head>
-<body>
-  {{!-- navbar --}}
-  <nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
-      {{#equal user.role 'admin'}}
-      <a class="navbar-brand" href="/admin/products">
-        <i class="fab fa-shopify fa-lg"></i>
-        <strong style="font-size:28px;">卡羅購物</strong>
-      </a>
-      <div class="d-flex">
-        <a href="/admin/logout" class="btn btn-outline-light">Logout</a>
-        <span style="color:white;font-size: 20px;margin-left:10px;margin-top:5px;">{{user.email}}</span>
-      </div>
-      {{/equal}}
-
-      {{#equal user.role 'user'}}
-      <a class="navbar-brand" href="/products">
-        <i class="fab fa-shopify fa-lg"></i>
-        <strong style="font-size:28px;">卡羅購物</strong>
-      </a>
-      <div class="d-flex">
-        <a class="navbar-brand" href="/orders">
-          <i class="fas fa-list-alt fa-lg"></i>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡羅購物</title>
+    {{!-- font awesome --}}
+    <script src="https://kit.fontawesome.com/ccfd93e9a7.js" crossorigin="anonymous"></script>
+    {{!-- bootstrap --}}
+    <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css">
+  </head>
+  <body>
+    {{!-- navbar --}}
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        {{#equal user.role 'admin'}}
+        <a class="navbar-brand" href="/admin/products">
+          <i class="fab fa-shopify fa-lg"></i>
+          <strong style="font-size:28px;">卡羅購物</strong>
         </a>
-        <a class="navbar-brand" href="/cart">
-          <i class="fas fa-shopping-cart fa-lg"></i>
-        </a>
-        <a href="/users/logout" class="btn btn-outline-light">Logout</a>
-        <span style="color:white;font-size: 20px;margin-left:10px;margin-top:5px;">{{user.email}}</span>
-      </div>
-      {{/equal}}
-
-      {{#if isAuthenticated}}
-      {{else}}
-      <a class="navbar-brand" href="/products">
-        <i class="fab fa-shopify fa-lg"></i>
-        <strong style="font-size:28px;">卡羅購物</strong>
-      </a>
-      <div class="d-flex">
-        <a class="navbar-brand" href="/cart">
-          <i class="fas fa-shopping-cart fa-lg"></i>
-        </a>
-        {{!-- <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#login">
-          Login
-        </button> --}}
-        <a href="/users/login" class="btn btn-outline-info">Login</a>
-      </div>
-      {{/if}}
-    </div>
-  </nav>
-
-  <!-- Modal -->
-  {{!-- <div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="d-flex">
+          <a href="/admin/logout" class="btn btn-outline-light">Logout</a>
+          <span style="color:white;font-size: 20px;margin-left:10px;margin-top:5px;">{{user.email}}</span>
         </div>
-        <div class="modal-body">
-          <div class="row mt-2">
-            <div class="col-md-6 m-auto">
-              <h2 class="text-center mt-3 mb-4">前台Login</h2>
-              {{> message}}
-              <form action="/users/login" method="POST">
-                <div class="form-group mb-3">
-                  <label for="email">Email</label>
-                  <input type="email" name="email" id="email" class="form-control" placeholder="enter Email"
-                    value="{{ email }}" required>
+        {{/equal}}
+
+        {{#equal user.role 'user'}}
+        <a class="navbar-brand" href="/products">
+          <i class="fab fa-shopify fa-lg"></i>
+          <strong style="font-size:28px;">卡羅購物</strong>
+        </a>
+        <div class="d-flex">
+          <a class="navbar-brand" href="/orders">
+            <i class="fas fa-list-alt fa-lg"></i>
+          </a>
+          <a class="navbar-brand" href="/cart">
+            <i class="fas fa-shopping-cart fa-lg"></i>
+          </a>
+          <a href="/users/logout" class="btn btn-outline-light">Logout</a>
+          <span style="color:white;font-size: 20px;margin-left:10px;margin-top:5px;">{{user.email}}</span>
+        </div>
+        {{/equal}}
+
+        {{#if isAuthenticated}}
+        {{else}}
+        <a class="navbar-brand" href="/products">
+          <i class="fab fa-shopify fa-lg"></i>
+          <strong style="font-size:28px;">卡羅購物</strong>
+        </a>
+        <div class="d-flex">
+          <a class="navbar-brand" href="/cart">
+            <i class="fas fa-shopping-cart fa-lg"></i>
+          </a>
+          {{!-- <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#login">
+            Login
+          </button> --}}
+          <a href="/users/login" class="btn btn-outline-info">Login</a>
+        </div>
+        {{/if}}
+      </div>
+    </nav>
+
+    <!-- Modal -->
+    {{!-- <div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-2">
+              <div class="col-md-6 m-auto">
+                <h2 class="text-center mt-3 mb-4">前台Login</h2>
+                {{> message}}
+                <form action="/users/login" method="POST">
+                  <div class="form-group mb-3">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="enter Email"
+                      value="{{ email }}" required>
+                  </div>
+                  <div class="form-group mb-3">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="enter Password"
+                      required>
+                  </div>
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                  </div>
+                </form>             
+                <div class="d-flex justify-content-between">
+                  <p class="lead mt-3">
+                    尚未註冊?<a href="/users/register">前往註冊</a>
+                  </p>
                 </div>
-                <div class="form-group mb-3">
-                  <label for="password">Password</label>
-                  <input type="password" name="password" id="password" class="form-control" placeholder="enter Password"
-                    required>
-                </div>
-                <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-primary">Login</button>
-                </div>
-              </form>             
-              <div class="d-flex justify-content-between">
-                <p class="lead mt-3">
-                  尚未註冊?<a href="/users/register">前往註冊</a>
-                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div> --}}
+    </div> --}}
 
-  <div class="container-fluid">
-    {{{body}}}
-  </div>
-  {{!-- bootstrap --}}
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-    integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-</body>
+    <div class="container-fluid">
+      {{{body}}}
+    </div>
+    {{!-- bootstrap --}}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+      integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script>
+      function confirmDelete() {
+        if (confirm('確定刪除商品?')) {
+          return true
+        }
+        return false
+      }
+      function confirmShip() {
+        if (confirm('確定出貨訂單?')) {
+          return true
+        }
+        return false
+      }
+      function confirmCancel() {
+        if (confirm('確定取消訂單?')) {
+          return true
+        }
+        return false
+      }
+      function confirmRecover() {
+        if (confirm('確定恢復訂單?')) {
+          return true
+        }
+        return false
+      }
+      function confirmRecover() {
+        if (confirm('確定恢復訂單?')) {
+          return true
+        }
+        return false
+      }
+      function confirmAuthAdmin() {
+        if (confirm('確定修改權限為admin?')) {
+          return true
+        }
+        return false
+      }
+      function confirmAuthUser() {
+        if (confirm('確定修改權限為user?')) {
+          return true
+        }
+        return false
+      }
+    </script>
+  </body>
 </html>

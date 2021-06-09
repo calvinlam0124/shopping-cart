@@ -50,18 +50,18 @@
     </ul>
     <div>
       <form action="/admin/orders/{{order.id}}/ship" method="POST" class="d-inline">
-        <button type="submit" class="btn btn-success" 
+        <button type="submit" class="btn btn-success" onclick="return confirmShip()"
           {{#equal order.shipping_status '1' }}disabled{{/equal}} 
           {{#equal order.shipping_status '-1' }}disabled{{/equal}}>訂單出貨
         </button>
       </form>
       {{#equal order.shipping_status '-1'}}
       <form action="/admin/orders/{{order.id}}/recover" method="POST" class="d-inline">
-        <button type="submit" class="btn btn-primary">恢復訂單</button>
+        <button type="submit" class="btn btn-primary" onclick="return confirmRecover()">恢復訂單</button>
       </form>
       {{else}}
       <form action="/admin/orders/{{order.id}}/cancel" method="POST" class="d-inline">
-        <button type="submit" class="btn btn-warning">訂單取消</button>
+        <button type="submit" class="btn btn-warning" onclick="return confirmCancel()">訂單取消</button>
       </form>
       {{/equal}}
       <a href="/admin/orders" class="btn btn-secondary">回到訂單列表</a>

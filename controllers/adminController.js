@@ -136,7 +136,7 @@ const adminController = {
     try {
       const product = await Product.findByPk(req.params.id)
       await product.destroy()
-      req.flash('success_msg', 'Product Delete Success!')
+      req.flash('success_msg', `Product Id:${req.params.id} Delete Success!`)
       return res.status(200).redirect('back')
     } catch (e) {
       console.log(e)
@@ -175,7 +175,7 @@ const adminController = {
         req.flash('warning_msg', 'can not find this order!')
       } else {
         await order.update({ shipping_status: 1 })
-        req.flash('success_msg', 'Ship Order Success!')
+        req.flash('success_msg', `Ship Order Id:${req.params.id} Success!`)
         // send mail
         const user = await User.findByPk(order.UserId)
         const email = user.toJSON().email
@@ -198,7 +198,7 @@ const adminController = {
         req.flash('warning_msg', 'can not find this order!')
       } else {
         await order.update({ shipping_status: -1 })
-        req.flash('success_msg', 'Cancel Order Success!')
+        req.flash('success_msg', `Cancel Order Id:${req.params.id} Success!`)
       }
       return res.status(200).redirect('back')
     } catch (e) {
@@ -214,7 +214,7 @@ const adminController = {
         req.flash('warning_msg', 'can not find this order!')
       } else {
         await order.update({ shipping_status: 0 })
-        req.flash('success_msg', 'Recover Order Success!')
+        req.flash('success_msg', `Recover Order Id:${req.params.id} Success!`)
       }
       return res.status(200).redirect('back')
     } catch (e) {
