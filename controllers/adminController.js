@@ -80,13 +80,13 @@ const adminController = {
   // create new product
   postProduct: async (req, res, next) => {
     try {
-      const { name, description, price } = req.body
+      const { name, description, price, inventory } = req.body
       if (req.file) {
         imgur.setClientID(IMGUR_CLIENT_ID)
         const img = await uploadImg(req.file.path)
-        await Product.create({ name, description, price, image: img.data.link })
+        await Product.create({ name, description, price, inventory, image: img.data.link })
       } else {
-        await Product.create({ name, description, price })
+        await Product.create({ name, description, price, inventory })
       }
       req.flash('success_msg', 'Product Create Success!')
       return res.status(201).redirect('back')
@@ -116,16 +116,16 @@ const adminController = {
   // edit product
   putProduct: async (req, res, next) => {
     try {
-      const { name, description, price } = req.body
+      const { name, description, price, inventory } = req.body
       const product = await Product.findByPk(req.params.id)
       if (req.file) {
         imgur.setClientID(IMGUR_CLIENT_ID)
         const img = await uploadImg(req.file.path)
-        await product.update({ name, description, price, image: img.data.link })
+        await product.update({ name, description, price, inventory, image: img.data.link })
       } else {
-        await product.update({ name, description, price, image: product.image })
+        await product.update({ name, description, price, inventory, image: product.image })
       }
-      req.flash('success_msg', 'Product Edit Success!')
+      req.flash('success_msg', `Product Id:${req.params.id} Edit Success!`)
       return res.status(204).redirect('/admin/products')
     } catch (e) {
       console.log(e)

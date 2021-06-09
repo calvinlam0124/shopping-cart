@@ -36,6 +36,10 @@
         <span class="input-group-text" id="description">Description</span>
         <textarea class="form-control" name="description" id="description">{{product.description}}</textarea>
       </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inventory">Inventory</span>
+        <input type="number" class="form-control" name="inventory" value="{{product.inventory}}" required>
+      </div>
       {{#if status}}
       <button type="submit" class="btn btn-outline-success mb-3">確定編輯</button>
       {{else}}
