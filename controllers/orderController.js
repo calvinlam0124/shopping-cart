@@ -2,9 +2,10 @@ const db = require('../models')
 const Order = db.Order
 const Cart = db.Cart
 const OrderItem = db.OrderItem
+const Product = db.Product
 
 const { getData, decryptData } = require('../utils/handleMpgData')
-const { sendMail, orderMail, payMail} = require('../utils/sendMail')
+const { sendMail, orderMail, payMail } = require('../utils/sendMail')
 
 const orderController = {
   getOrders: async (req, res, next) => {
@@ -36,6 +37,27 @@ const orderController = {
   },
   postOrder: async (req, res, next) => {
     try {
+      // check all products have inventory
+      const cart = await Cart.findByPk(req.body.cartId, {
+        include: 'cartProducts'
+      })
+      for (const product of cart.cartProducts) {
+        if (product.inventory < product.CartItem.quantity) {
+          req.flash('warning_msg', `商品Id:${product.id}剩下${product.inventory}件，請重新選擇數量!`)
+          return res.redirect('back')
+        }
+      }
+      // update inventory data
+      const productsMap = new Map()
+      cart.cartProducts.forEach(product => {
+        productsMap.set(product.id, product.CartItem.quantity)
+      })
+      for (const [id, quantity] of productsMap) {
+        const product = await Product.findByPk(id)
+        await product.update({
+          inventory: product.inventory -= quantity
+        })
+      }
       // create order (cart -> order)
       const order = await Order.create({
         UserId: req.user.id,
@@ -47,9 +69,6 @@ const orderController = {
         payment_status: req.body.payment_status
       })
       // create orderItem (cartItem -> orderItem)
-      const cart = await Cart.findByPk(req.body.cartId, {
-        include: 'cartProducts'
-      })
       const items = Array.from({ length: cart.cartProducts.length }).map((_, i) => (
         OrderItem.create({
           OrderId: order.id,
@@ -69,7 +88,7 @@ const orderController = {
       await cart.destroy()
       // clear cartId in session
       req.session.cartId = ''
-      req.flash('success_msg', '訂單下定成功!')
+      req.flash('success_msg', '成立訂單成功!')
       return res.status(201).redirect('/orders')
     } catch (e) {
       console.log(e)

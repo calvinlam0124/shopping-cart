@@ -73,12 +73,12 @@ app.use(passport.session())
 require('./routes')(app)
 
 // error handling
-// app.use((err, req, res, next) => {
-//   if (err) {
-//     res.status(500)
-//     return res.render('error', { err })
-//   }
-// })
+app.use((err, req, res, next) => {
+  if (err) {
+    res.status(500)
+    return res.render('error', { err })
+  }
+})
 
 app.listen(PORT, () => {
   console.log(`Express app is running on localhost:${PORT}`)
