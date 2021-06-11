@@ -24,7 +24,7 @@ function getData (amount, productDesc, email) {
     ClientBackURL: ClientBackURL, // pay fail and back to url
     Email: email, // pay person email
     LoginType: 0, // don't need to login Newsboy
-    OrderComment: 'OrderComment' // store comment
+    OrderComment: '已進入付款頁面，請小心資料外洩!' // store comment
   }
   return {
     MerchantID: MerchantID,

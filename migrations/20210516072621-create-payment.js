@@ -17,20 +17,18 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      sn: {
-        type: Sequelize.INTEGER
-      },
-      amount: {
-        type: Sequelize.INTEGER
-      },
       payment_method: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        validate: {
+          isIn: [['CreditCard', 'LinePay']]
+        }
+      },
+      isSuccess: {
+        type: Sequelize.BOOLEAN
       },
       paid_at: {
-        type: Sequelize.DATE
-      },
-      params: {
-        type: Sequelize.TEXT
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
       createdAt: {
         allowNull: false,
