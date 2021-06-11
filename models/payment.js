@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     OrderId: DataTypes.INTEGER,
     payment_method: DataTypes.STRING,
     isSuccess: DataTypes.BOOLEAN,
-    paid_at: DataTypes.DATE
+    failure_message: DataTypes.TEXT,
+    payTime: DataTypes.DATE
   }, {})
   Payment.associate = function (models) {
     // define association here

@@ -3,6 +3,7 @@ const Order = db.Order
 const Cart = db.Cart
 const OrderItem = db.OrderItem
 const Product = db.Product
+const Payment = db.Payment
 
 const { getData, decryptData } = require('../utils/handleMpgData')
 const { sendMail, orderMail, payMail } = require('../utils/sendMail')
@@ -125,19 +126,33 @@ const orderController = {
   },
   newebpayCallback: async (req, res, next) => {
     try {
-      console.log('===token===', req.session.token)
       const data = JSON.parse(decryptData(req.body.TradeInfo))
       console.log('***data***', data)
+      // find order
       const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })
-      await order.update({ payment_status: 1 })
-      // send mail
-      const email = req.user.email
-      const subject = `[TEST]卡羅購物 訂單編號:${order.id} 付款成功!`
-      const status = '未出貨 / 已付款'
-      const msg = '近期內會安排出貨 再麻煩注意電子郵件!'
-      sendMail(email, subject, payMail(order, status, msg))
+      // create payment data
+      await Payment.create({
+        OrderId: order.id,
+        payment_method: data.Result.PaymentType,
+        isSuccess: data.Status === 'SUCCESS' ? true : false,
+        failure_message: data.Message,
+        payTime: data.Result.PayTime
+      })
       // flash msg
-      req.flash('success_msg', `訂單編號:${order.id} 付款成功!`)
+      if (data.Status === 'SUCCESS') {
+        // update payment_status
+        await order.update({ payment_status: 1 })
+        // send mail
+        const email = req.user.email
+        const subject = `[TEST]卡羅購物 訂單編號:${order.id} 付款成功!`
+        const status = '未出貨 / 已付款'
+        const msg = '近期內會安排出貨 再麻煩注意電子郵件!'
+        sendMail(email, subject, payMail(order, status, msg))
+        // flash message
+        req.flash('warning_msg', `訂單編號:${order.id} 付款失敗!  [說明] ${data.Message}`)
+      } else {
+        req.flash('success_msg', `訂單編號:${order.id} 付款成功!`)
+      }
       return res.status(200).redirect('/orders')
     } catch (e) {
       console.log(e)

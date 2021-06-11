@@ -20,15 +20,17 @@ module.exports = {
       payment_method: {
         type: Sequelize.STRING,
         validate: {
-          isIn: [['CreditCard', 'LinePay']]
+          isIn: [['CREDIT']]
         }
       },
       isSuccess: {
         type: Sequelize.BOOLEAN
       },
-      paid_at: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+      failure_message: {
+        type: Sequelize.TEXT
+      },
+      payTime: {
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
