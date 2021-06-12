@@ -133,7 +133,7 @@ const orderController = {
       // create payment data
       await Payment.create({
         OrderId: order.id,
-        payment_method: data.Result.PaymentType,
+        payment_method: data.Result.PaymentMethod ? data.Result.PaymentMethod : data.Result.PaymentType,
         isSuccess: data.Status === 'SUCCESS' ? true : false,
         failure_message: data.Message,
         payTime: data.Result.PayTime
@@ -149,9 +149,9 @@ const orderController = {
         const msg = '近期內會安排出貨 再麻煩注意電子郵件!'
         sendMail(email, subject, payMail(order, status, msg))
         // flash message
-        req.flash('warning_msg', `訂單編號:${order.id} 付款失敗!  [說明] ${data.Message}`)
-      } else {
         req.flash('success_msg', `訂單編號:${order.id} 付款成功!`)
+      } else {
+        req.flash('warning_msg', `訂單編號:${order.id} 付款失敗!  [說明] ${data.Message}`)
       }
       return res.status(200).redirect('/orders')
     } catch (e) {

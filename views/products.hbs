@@ -9,15 +9,15 @@
           <div class="card-body">
             <p class="card-text">
               <h4 style="height:50px"><a href="/products/{{this.id}}">{{this.name}}</a></h4>
-              <p style="height:50px"><span>{{this.description}}</span></p>
-              <p><span style="color:deeppink;">還剩下{{this.inventory}}件</span></p>
+              <p>{{this.description}}</p>
+              <h5 class="text-success font-weight-bold">$ {{this.price}}</span></h5>
             </p>
             <div class="d-flex justify-content-between align-items-center">
-              <span class="text-muted">$ {{this.price}}</span>
+              <p style="color:deeppink;">還剩下{{this.inventory}}件</p>
               <div class="btn-group">
                 <form action="/cart" method="POST">
                   <input type="hidden" name="productId" value="{{this.id}}">
-                  <button type="submit" class="btn btn-sm btn-outline-secondary">Add to Cart</button>
+                  <button type="submit" class="btn btn-outline-info"><i class="fas fa-shopping-cart fa-1x"></i> 加入購物車</button>
                 </form>
               </div>
             </div>
@@ -41,8 +41,8 @@
       </nav>
     </div>
   </div>
-  <nav class="col-md-3 d-none d-md-block bg-light sidebar mt-4">
-    <div class="sidebar-sticky">
+  <nav class="col-md-3 d-none d-md-block bg-light sidebar" style="margin-top:40px;">
+    <div class="sidebar-sticky mt-3">
       <ul class="list-group list-group-flush">
         <li class="list-group-item">
           {{#if cart}}
@@ -54,16 +54,19 @@
             <div class="col-md-8">
               <div class="card-body">
                 <h5 class="card-title">{{this.name}}</h5>
-                <p>${{this.price}}</p>
-                <div class="btn-group">
-                  <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
-                  </form>
-                  <span style="margin: 0 20px;">{{this.CartItem.quantity}}</span>
-                  <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
-                  </form>
-
+                <h5 class="text-success font-weight-bold">${{this.price}}</h5>
+                <div class="input-group mb-3 d-flex">
+                  <div class="input-group-prepend">
+                    <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
+                      <button type="submit" class="btn btn-outline-secondary">+</button>
+                    </form>
+                  </div>
+                  <div style="border:black 1px solid;padding: 5px 15px;">{{this.CartItem.quantity}}</div>
+                  <div class="input-group-append">
+                    <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
+                      <button type="submit" class="btn btn-outline-secondary">-</button>
+                    </form>
+                  </div>
                   <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
                     <button type="submit" class="btn btn-link" style="color: red;">
                       <i class="fas fa-trash"></i>
@@ -78,10 +81,22 @@
         </li>
       </ul>
       <hr>
-      <li class="list-group-item">
+      <li class="list-group-item text-center" style="font-size: 1.5em;">
         Total: ${{#if totalPrice}}{{totalPrice}}{{/if}}
       </li>
-      <a href="/cart" class="btn btn-primary btn-block mt-3">Go to Cart</a>
+      <a href="/cart" class="btn btn-info btn-block mt-3">前往購物車</a>
     </div>
   </nav>
 </div>
+
+
+
+{{!-- <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <button class="btn btn-outline-secondary" type="button">+</button>
+  </div>
+  <div style="border:black 1px solid;padding: 7px 20px;">123</div>
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button">-</button>
+  </div>
+</div> --}}

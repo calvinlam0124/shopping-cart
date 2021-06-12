@@ -18,10 +18,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       payment_method: {
-        type: Sequelize.STRING,
-        validate: {
-          isIn: [['CREDIT']]
-        }
+        type: Sequelize.STRING
       },
       isSuccess: {
         type: Sequelize.BOOLEAN
