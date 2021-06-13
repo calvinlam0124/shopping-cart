@@ -44,8 +44,8 @@ const userController = {
   logout: (req, res) => {
     req.logout()
     req.session.email = ''
-    req.session.cartId = ''
     req.session.token = ''
+    req.session.cartId = ''
     req.flash('success_msg', 'Logout Success!')
     return res.status(200).redirect('/users/login')
   },

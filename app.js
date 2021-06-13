@@ -76,6 +76,7 @@ require('./routes')(app)
 app.use((err, req, res, next) => {
   if (err) {
     res.status(500)
+    console.log('500 error: ', err)
     return res.render('error', { err })
   }
 })

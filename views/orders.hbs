@@ -1,26 +1,30 @@
-<div class="mt-3">
+<div>
   {{> message}}
 </div>
 {{#each orders}}
-<div class="row">
+<div class="row mt-4">
   <div class="col-md-5">
+    <h3 class="ml-2 font-weight-bold text-primary">訂單編號: {{this.id}}</h3>
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">Product</th>
-          <th scope="col">quantity</th>
-          <th scope="col">Subtotal</th>
+          <th scope="col">商品名稱</th>
+          <th scope="col">單價</th>
+          <th scope="col">數量</th>
+          <th scope="col">小計</th>
         </tr>
       </thead>
       <tbody>
         {{#each this.orderProducts}}
         <tr>
           <td>{{this.name}}</td>
-          <td>{{this.OrderItem.quantity}}</td>
           <td>{{this.price}}</td>
+          <td>{{this.OrderItem.quantity}}</td>
+          <td>{{multiply this.price this.OrderItem.quantity}}</td>
         </tr>
         {{/each}}
         <tr>
+          <td><a href="/order/{{this.id}}" class="btn btn-info">詳細資訊</a></td>
           <td></td>
           <td style="text-align: right;">
             <h4>Total: </h4>
@@ -32,38 +36,6 @@
       </tbody>
     </table>
   </div>
-
-  <div>
-    <ul>
-      <li>訂單編號: {{this.id}}</li>
-      <li>name: {{this.name}}</li>
-      <li>address: {{this.address}}</li>
-      <li>phone: {{this.phone}}</li>
-      <li>shipping_status: 
-        {{#equal this.shipping_status '1'}}已出貨{{/equal}}
-        {{#equal this.shipping_status '0'}}未出貨{{/equal}}
-        {{#equal this.shipping_status '-1'}}已取消{{/equal}}
-      </li>
-      <li>payment_status: 
-        {{#equal this.payment_status '1'}}已付款{{/equal}}
-        {{#equal this.payment_status '0'}}未付款{{/equal}}
-      </li>
-    </ul>
-
-    <div class="d-flex justify-content-start" style="margin-left:20px;">
-      <form action="/order/{{this.id}}/cancel" method="POST" style="margin-right:10px;">
-        <button type="submit" class="btn btn-danger"{{#equal this.shipping_status '0'}}{{else}}disabled{{/equal}}>取消訂單</button>
-      </form>
-      {{#equal this.payment_status '1'}}
-      {{else}}
-        {{#equal this.shipping_status '-1'}}
-        {{else}}
-        <a href="/order/{{this.id}}/payment"><button class="btn btn-success">立即付款</button></a>
-        {{/equal}}
-      {{/equal}}  
-    </div>
-  </div>
-</div>
-
-<hr />
+</div>  
+<hr>
 {{/each}}
