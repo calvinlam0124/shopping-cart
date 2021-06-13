@@ -51,14 +51,14 @@
     </ul>
 
     <div class="d-flex justify-content-start" style="margin-left:20px;">
-      <form action="/orders/{{this.id}}/cancel" method="POST" style="margin-right:10px;">
+      <form action="/order/{{this.id}}/cancel" method="POST" style="margin-right:10px;">
         <button type="submit" class="btn btn-danger"{{#equal this.shipping_status '0'}}{{else}}disabled{{/equal}}>取消訂單</button>
       </form>
       {{#equal this.payment_status '1'}}
       {{else}}
         {{#equal this.shipping_status '-1'}}
         {{else}}
-        <a href="/orders/{{this.id}}/payment"><button class="btn btn-success">立即付款</button></a>
+        <a href="/order/{{this.id}}/payment"><button class="btn btn-success">立即付款</button></a>
         {{/equal}}
       {{/equal}}  
     </div>
@@ -67,10 +67,3 @@
 
 <hr />
 {{/each}}
-
-<script>
-  const token = localStorage.getItem('token')
-  if (token) {
-    req.headers['authorization'] = `Bearer ${token}`
-  }
-</script>

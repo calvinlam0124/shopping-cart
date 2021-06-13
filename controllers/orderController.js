@@ -36,6 +36,23 @@ const orderController = {
       return next(e)
     }
   },
+  fillOrderData: async (req, res, next) => {
+    try {
+      const cart = await Cart.findOne({
+        where: { UserId: req.user.id },
+        include: 'cartProducts'
+      })
+      if (!cart.cartProducts.length) {
+        req.flash('warning_msg', '購物車空空的唷!')
+        return res.redirect('/cart')
+      }
+      const cartId = cart.id
+      const amount = cart.cartProducts.length > 0 ? cart.cartProducts.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+      return res.render('orderData', { cartId, amount })
+    } catch (e) {
+      console.log(e)
+    }
+  },
   postOrder: async (req, res, next) => {
     try {
       // check all products have inventory
@@ -45,7 +62,7 @@ const orderController = {
       for (const product of cart.cartProducts) {
         if (product.inventory < product.CartItem.quantity) {
           req.flash('warning_msg', `商品Id:${product.id}剩下${product.inventory}件，請重新選擇數量!`)
-          return res.redirect('back')
+          return res.redirect('/cart')
         }
       }
       // update inventory data
@@ -89,8 +106,27 @@ const orderController = {
       await cart.destroy()
       // clear cartId in session
       req.session.cartId = ''
-      req.flash('success_msg', '成立訂單成功!')
-      return res.status(201).redirect('/orders')
+      // put orderId in session
+      req.session.orderId = order.id
+      return res.status(201).redirect('/order/check')
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  checkOrder: async (req, res, next) => {
+    try {
+      const order = await Order.findByPk(req.session.orderId)
+      if (order.toJSON().payment_status === '0') {
+        const tradeData = getData(order.amount, '卡羅購物-精選商品', req.user.email)
+        // save MerchantOrderNo to sn
+        await order.update({
+          sn: tradeData.MerchantOrderNo.toString()
+        })
+        return res.render('checkOrder', { order: order.toJSON(), tradeData })
+      } else {
+        const paidOrder = true
+        return res.render('checkOrder', { order: order.toJSON(), paidOrder })
+      }
     } catch (e) {
       console.log(e)
       return next(e)
@@ -109,21 +145,20 @@ const orderController = {
       return next(e)
     }
   },
-  getPayment: async (req, res, next) => {
-    try {
-      const order = await Order.findByPk(req.params.id)
-      const tradeData = getData(order.amount, 'good products', req.user.email)
-      console.log('***tradeData***', tradeData)
-      // save MerchantOrderNo to sn
-      await order.update({
-        sn: tradeData.MerchantOrderNo.toString()
-      })
-      return res.render('payment', { order: order.toJSON(), tradeData, token: req.session.token })
-    } catch (e) {
-      console.log(e)
-      return next(e)
-    }
-  },
+  // getPayment: async (req, res, next) => {
+  //   try {
+  //     const order = await Order.findByPk(req.params.id)
+  //     const tradeData = getData(order.amount, '卡羅購物-精選商品', req.user.email)
+  //     // save MerchantOrderNo to sn
+  //     await order.update({
+  //       sn: tradeData.MerchantOrderNo.toString()
+  //     })
+  //     return res.render('payment', { order: order.toJSON(), tradeData, token: req.session.token })
+  //   } catch (e) {
+  //     console.log(e)
+  //     return next(e)
+  //   }
+  // },
   newebpayCallback: async (req, res, next) => {
     try {
       const data = JSON.parse(decryptData(req.body.TradeInfo))
@@ -153,7 +188,7 @@ const orderController = {
       } else {
         req.flash('warning_msg', `訂單編號:${order.id} 付款失敗!  [說明] ${data.Message}`)
       }
-      return res.status(200).redirect('/orders')
+      return res.status(200).redirect('/order/check')
     } catch (e) {
       console.log(e)
       return next(e)

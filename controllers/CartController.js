@@ -88,7 +88,7 @@ const cartController = {
       const addProduct = await Product.findByPk(product.ProductId)
       // check product quantity+1 > inventory or not
       if (product.quantity + 1 > addProduct.inventory) {
-        req.flash('warning_msg', `商品Id:${req.body.productId} 庫存剩下${addProduct.inventory}件!`)
+        req.flash('warning_msg', `商品Id:${product.ProductId} 庫存剩下${addProduct.inventory}件!`)
         return res.redirect('back')
       }
       await product.update({

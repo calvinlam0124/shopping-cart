@@ -14,6 +14,4 @@ router.post('/', (req, res, next) => {
   checkToken(req, res, next, cartController.postCart)
 }, authenticated, cartController.postCart)
 
-router.get('/orderdata', authenticated, (req, res, next) => { return res.render('orderData') })
-
 module.exports = router

@@ -12,7 +12,7 @@ module.exports = app => {
   app.use('/products', products)
   app.use('/cart', carts)
   app.use('/cartItem', cartItems)
-  app.use('/orders', authenticated, orders)
+  app.use('/order', authenticated, orders)
   app.use('/admin', admins)
   app.use('/', (req, res) => { return res.redirect('/products') })
 }

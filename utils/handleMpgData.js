@@ -5,9 +5,9 @@ const HashKey = process.env.HASH_KEY
 const HashIV = process.env.HASH_IV
 const URL = process.env.URL
 const PayGateWay = 'https://ccore.newebpay.com/MPG/mpg_gateway'
-const ReturnURL = URL + '/orders/newebpay/callback?from=ReturnURL'
-const NotifyURL = URL + '/orders/newebpay/callback?from=NotifyURL'
-const ClientBackURL = URL + '/orders'
+const ReturnURL = URL + '/order/newebpay/callback?from=ReturnURL'
+const NotifyURL = URL + '/order/newebpay/callback?from=NotifyURL'
+const ClientBackURL = URL + '/order'
 
 function getData (amount, productDesc, email) {
   const data = {
