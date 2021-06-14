@@ -57,7 +57,7 @@
     <li class="list-group-item">
       <h5 class="font-weight-bold">訂單資訊</h5>
       <div>訂單編號: {{order.id}}</div>
-      <div>下單時間: {{order.createdAt}}</div>
+      <div>下單時間: {{formatTime order.createdAt}}</div>
       <div>訂單狀態: 
       {{#equal order.shipping_status '1'}}已出貨{{/equal}}
       {{#equal order.shipping_status '0'}}未出貨{{/equal}}
