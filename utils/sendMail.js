@@ -2,7 +2,6 @@ const nodemailer = require('nodemailer')
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    type: 'OAuth2',
     user: process.env.USER_MAIL,
     pass: process.env.USER_PASSWORD
   }
@@ -66,7 +65,7 @@ function orderMail (order, status, msg) {
             <tr>
               <td class="title">付款連結</td>
               <td> 
-                <a href="${process.env.URL}/orders/${order.id}/payment">${process.env.URL}/orders/${order.id}/payment</a>
+                <a href="${process.env.URL}/order/${order.id}">${process.env.URL}/order/${order.id}</a>
               </td>
             </tr>
             <tr>
@@ -124,7 +123,7 @@ function payMail (order, status, msg) {
             <tr>
               <td class="title">查看訂單</td>
               <td> 
-                <a href="${process.env.URL}/orders">${process.env.URL}/orders</a>
+                <a href="${process.env.URL}/order/${order.id}">${process.env.URL}/order/${order.id}</a>
               </td>
             </tr>
           </tbody>

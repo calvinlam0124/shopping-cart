@@ -14,6 +14,7 @@ const productController = {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
       }
       let products = await Product.findAndCountAll({
+        where: { deletedAt: null },
         offset: PAGE_OFFSET,
         limit: PAGE_LIMIT
       })
