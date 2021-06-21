@@ -26,8 +26,8 @@ const authenticated = (req, res, next) => {
     }
     res.locals.user = req.user
     res.locals.isAuthenticated = req.isAuthenticated()
-    res.locals.token = req.session.token
-    console.log('---req.session.token--', req.session.token)
+    // res.locals.token = req.session.token
+    // console.log('---req.session.token--', req.session.token)
     return next()
   })(req, res, next)
 }

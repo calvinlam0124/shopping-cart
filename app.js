@@ -4,9 +4,12 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
-const MemoryStore = require('memorystore')(session)
-const passport = require('passport')
+// const MemcachedStore = require('connect-memcached')(session)
 const cors = require('cors')
+
+// memcached
+const memcached = require('memcached')
+const cache = new memcached('localhost:11211')
 
 // .env
 if (process.env.NODE_ENV !== 'production') {
@@ -37,24 +40,33 @@ app.use(methodOverride('_method'))
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
+  // resave: true,
   saveUninitialized: true,
-  cookie: { maxAge: 86400000 },
-  store: new MemoryStore({
-    checkPeriod: 86400000 // 24h
-  })
+  // saveUninitialized: false,
+  // cookie: { maxAge: 100 * 60 * 60 * 24 },
+  // store: new MemcachedStore({
+    // hosts: ['127.0.0.1:11211'],
+    // checkPeriod: 100 * 60 * 60 * 24 // 24hr
+  // })
 }))
 
 // set connect-flash
 app.use(flash())
 
-// put token in req.headers
+// put token in req.headers by using memcached
 app.use((req, res, next) => {
-  console.log('**token***', req.session.token)
-  if (req.session.token) {
-    req.headers.authorization = `Bearer ${req.session.token}`
+  cache.get('token', (err, value) => {
+    if (err) {
+      return next(err)
+    }
+    if (value) {
+      console.log('===value===', value)
+      req.headers.authorization = `Bearer ${value}`
+      return next()
+    }
+    cache.end()
     return next()
-  }
-  return next()
+  })
 })
 
 // flash message
@@ -64,10 +76,6 @@ app.use((req, res, next) => {
   res.locals.danger_msg = req.flash('danger_msg')
   return next()
 })
-
-// use passport
-app.use(passport.initialize())
-app.use(passport.session())
 
 // require routes
 require('./routes')(app)

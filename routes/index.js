@@ -5,7 +5,7 @@ const cartItems = require('./modules/cartItems')
 const orders = require('./modules/orders')
 const admins = require('./modules/admins')
 
-const { authenticated, authenticator } = require('../middleware/auth')
+const { authenticated } = require('../middleware/auth')
 
 module.exports = app => {
   app.use('/users', users)

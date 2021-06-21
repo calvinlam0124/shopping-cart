@@ -3,6 +3,8 @@ const User = db.User
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const memcached = require('memcached')
+const cache = new memcached('localhost:11211')
 
 const { sendMail, registerMail } = require('../utils/sendMail')
 
@@ -33,7 +35,15 @@ const userController = {
       const payload = { id: user.id }
       const expiresIn = { expiresIn: '10h' }
       const token = jwt.sign(payload, process.env.JWT_SECRET, expiresIn)
-      req.session.token = token
+      // memcached
+      const lifetime = 60 * 60 * 10 // seconds
+      cache.set('token', token, lifetime, (err) => {
+        if (err) {
+          console.log(err)
+        }
+        console.log('memcached set OK!')
+        return cache.end() // close connection
+      })
       req.flash('success_msg', 'Login Success!')
       return res.status(200).redirect('/products')
     } catch (e) {
@@ -41,11 +51,16 @@ const userController = {
       return next(e)
     }
   },
-  logout: (req, res) => {
+  logout: (req, res, next) => {
     req.logout()
     req.session.email = ''
-    req.session.token = ''
     req.session.cartId = ''
+    cache.del('token', (err) => {
+      if (err) {
+        console.log(err)
+        return next(err)
+      }
+    })
     req.flash('success_msg', 'Logout Success!')
     return res.status(200).redirect('/users/login')
   },
@@ -102,7 +117,16 @@ const userController = {
     const payload = { id: req.user[0].id }
     const expiresIn = { expiresIn: '10h' }
     const token = jwt.sign(payload, process.env.JWT_SECRET, expiresIn)
-    req.session.token = token
+    // req.session.token = token
+    // memcached
+    const lifetime = 60 * 60 * 10 // seconds
+    cache.set('token', token, lifetime, (err) => {
+      if (err) {
+        console.log(err)
+      }
+      console.log('memcached set OK!')
+      return cache.end() // close connection
+    })
     req.flash('success_msg', 'Google登入成功!')
     return res.redirect('/products')
   }
