@@ -5,6 +5,8 @@ const Order = db.Order
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const memcached = require('memcached')
+const cache = new memcached('localhost:11211')
 
 const { sendMail, payMail } = require('../utils/sendMail')
 
@@ -48,7 +50,15 @@ const adminController = {
       const payload = { id: user.id }
       const expiresIn = { expiresIn: '10h' }
       const token = jwt.sign(payload, process.env.JWT_SECRET, expiresIn)
-      req.session.token = token
+      // memcached
+      const lifetime = 60 * 60 * 6 // seconds
+      cache.set('token', token, lifetime, (err) => {
+        if (err) {
+          console.log(err)
+        }
+        console.log('memcached set OK!')
+        return cache.end() // close connection
+      })
       req.flash('success_msg', 'Login Success!')
       return res.status(200).redirect('/admin/products')
     } catch (e) {
@@ -56,10 +66,16 @@ const adminController = {
       return next(e)
     }
   },
-  logout: (req, res) => {
+  logout: (req, res, next) => {
     req.logout()
     req.session.token = ''
     req.session.email = ''
+    cache.del('token', (err) => {
+      if (err) {
+        console.log(err)
+        return next(err)
+      }
+    })
     req.flash('success_msg', 'Logout Success!')
     return res.status(200).redirect('/admin/login')
   },
