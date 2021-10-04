@@ -8,8 +8,8 @@ const flash = require('connect-flash')
 const cors = require('cors')
 
 // memcached
-const memcached = require('memcached')
-const cache = new memcached('localhost:11211')
+// const memcached = require('memcached')
+// const cache = new memcached('localhost:11211')
 
 // .env
 if (process.env.NODE_ENV !== 'production') {
@@ -21,6 +21,9 @@ const PORT = process.env.PORT || 3000
 
 // set cors
 app.use(cors())
+
+// set trust proxy
+app.set('trust proxy', true)
 
 // set view engine
 app.engine('hbs', exphbs({
@@ -40,14 +43,8 @@ app.use(methodOverride('_method'))
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  // resave: true,
   saveUninitialized: true,
-  // saveUninitialized: false,
-  // cookie: { maxAge: 100 * 60 * 60 * 24 },
-  // store: new MemcachedStore({
-    // hosts: ['127.0.0.1:11211'],
-    // checkPeriod: 100 * 60 * 60 * 24 // 24hr
-  // })
+  cookie: { maxAge: 100 * 60 * 60 * 24 }
 }))
 
 // set connect-flash

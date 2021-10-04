@@ -17,6 +17,12 @@
   },
   "production": {
     "use_env_variable": "JAWSDB_URL",
-    "timezone": "+08:00"
+    "timezone": "+08:00",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false 
+      }
+    }
   }
 }

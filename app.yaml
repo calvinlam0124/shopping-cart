@@ -1,0 +1,15 @@
+runtime: nodejs14
+
+env_variables:
+  PORT: "3000"
+  USER_MAIL: "super000999888@gmail.com"
+  USER_PASSWORD: "fuckoff777"
+  MERCHANT_ID: "MS320239107"
+  URL: "https://7f83b97e3305.ngrok.io"
+  HASH_KEY: "WYS1lMxZZvoLIifGPyCya7k7KC1VA6Lz"
+  HASH_IV: "CAe2WhQfqzYMHkoP"
+  IMGUR_CLIENT_ID: "f942201de16afbf"
+  JWT_SECRET: "jwtsecret"
+  SESSION_SECRET: "sessionsecret"
+  GOOGLE_CLIENT_ID: "641954433492-a3u58a0djj6irhvp229m5g2eo2vnq5si.apps.googleusercontent.com"
+  GOOGLE_CLIENT_SECRET: "IIFJff90GSZA-kYgCq-_SZ-Z"
