@@ -1,0 +1,102 @@
+services:
+    app:
+        image: node:20.8.0-bookworm
+        working_dir: /app
+        volumes:
+            - .:/app
+        ports:
+            - "3001:3000"
+        depends_on:
+            - db
+            - cache
+        command:
+            - "node"
+            - "app.js"
+        healthcheck:
+#            test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
+            test: [ "CMD", "curl", "-f", "http://localhost:3000/" ]
+            interval: 1m30s
+            timeout: 10s
+            retries: 3
+            start_period: 40s
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+
+    db:
+        image: mysql:9.1.0-oraclelinux9
+#        command: --default-authentication-plugin=mysql_native_password --max_connections=100
+        security_opt:
+            - seccomp=unconfined
+        environment:
+            - MYSQL_DATABASE=shopping_cart
+            - MYSQL_ROOT_PASSWORD=password
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./db-data:/var/lib/mysql
+        healthcheck:
+            test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+            timeout: 20s
+            retries: 10
+
+    # PROFILE: migration
+    # docker compose --profile migration -f docker-compose.yaml up
+    db-migration:
+        profiles:
+            - migration
+        image: node:20.8.0-bookworm
+        working_dir: /app
+        volumes:
+            - .:/app
+        command:
+            - "npx"
+            - "sequelize-cli"
+            - "db:migrate"
+            - "--url"
+            - "'mysql://root:password@host.docker.internal/shopping_cart'"
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        depends_on:
+            db:
+                condition: service_healthy
+
+    # PROFILE: migration
+    # docker compose --profile seed up
+    db-seed:
+        profiles:
+            - seed
+        image: node:20.8.0-bookworm
+        working_dir: /app
+        volumes:
+            - .:/app
+        command:
+            - "npx"
+            - "sequelize-cli"
+            - "db:seed:all"
+            - "--url"
+            - "'mysql://root:password@host.docker.internal/shopping_cart'"
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        depends_on:
+            db:
+                condition: service_healthy
+#            db-migration
+#                condition: service_healthy
+
+    # PROFILE: npm
+    # docker compose --profile migration -f docker-compose.yaml up
+    app-npm:
+        profiles:
+            - npm
+        image: node:20.8.0-bookworm
+        working_dir: /app
+        volumes:
+            - .:/app
+        command:
+            - "npm"
+            - "install"
+
+    cache:
+        image: memcached:1.6.32-bookworm
+        ports:
+            - "11211:11211"

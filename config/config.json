@@ -3,7 +3,7 @@
     "username": "root",
     "password": "password",
     "database": "shopping_cart",
-    "host": "127.0.0.1",
+    "host": "host.docker.internal",
     "dialect": "mysql",
     "timezone": "+08:00"
   },

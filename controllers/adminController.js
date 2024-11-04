@@ -6,7 +6,7 @@ const Order = db.Order
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const memcached = require('memcached')
-const cache = new memcached('localhost:11211')
+const cache = new memcached('host.docker.internal:11211')
 
 const { sendMail, payMail } = require('../utils/sendMail')
 

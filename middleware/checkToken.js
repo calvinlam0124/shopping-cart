@@ -7,7 +7,7 @@
 // }
 
 const memcached = require('memcached')
-const cache = new memcached('localhost:11211')
+const cache = new memcached('host.docker.internal:11211')
 
 function checkToken (req, res, next, controller) {
   cache.get('token', (err, value) => {

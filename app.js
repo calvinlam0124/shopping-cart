@@ -8,8 +8,8 @@ const flash = require('connect-flash')
 const cors = require('cors')
 
 // memcached
-// const memcached = require('memcached')
-// const cache = new memcached('localhost:11211')
+const memcached = require('memcached')
+const cache = new memcached('host.docker.internal:11211')
 
 // .env
 if (process.env.NODE_ENV !== 'production') {
